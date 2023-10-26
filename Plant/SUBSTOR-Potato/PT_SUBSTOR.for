@@ -287,8 +287,12 @@ C=======================================================================
      &    BIOMAS, DEADLF, GRAINN, ISTAGE, LFWT, MDATE,    !Input
      &    NLAYR, NSTRES, PLTPOP, RLV, ROOTN, RTDEP, RTWT, !Input
      &    SATFAC, SENESCE, STMWT, STOVN, STOVWT, SWFAC,   !Input
+<<<<<<< HEAD
      &    TRLV,
      &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT)!Input
+=======
+     &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT, DTT)!Input
+>>>>>>> 82500b72 (Pass DTT as argument to PT_OPGROW subroutine)
 
       CALL PT_OPHARV(CONTROL, ISWITCH, 
      &    AGEFAC, APTNUP, BIOMAS, GNUP, HARVFRAC, ISDATE, !Input
