@@ -44,7 +44,7 @@ C=======================================================================
       REAL SLA,PCNL,TURFAC,CANHT,CANWH,RLV(20),HI,SHELPC,SHELLW
       REAL SDSIZE,PODNO,RTDEP,NSTRES,SWFAC,SATFAC,PLTPOP,GM2KG
       REAL FRYLD,DEADLF, GRAINN
-
+      REAL DTT
       REAL LFWT, GPP, PCNGRN, PCNRT
       REAL PCNST, PCNVEG, ROOTN
       REAL STOVN, STOVWT, TRLV
@@ -399,7 +399,6 @@ C
      &  .OR. (YRDOY .EQ. YRPLT)           !on planting date, and
      &  .OR. (YRDOY .EQ. MDATE))) THEN    !at harvest maturity 
 
-        REAL :: DTT
         DTT = 27.50
 
 !       PlantGro.out file
