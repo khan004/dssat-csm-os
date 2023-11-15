@@ -323,7 +323,7 @@
 
         IF (RNMODE .EQ. 'I' .AND. NYRS .LE. 1) THEN
           IF (RAINR(I) < 1000.) THEN
-            WRITE(*,600) STAG(I), NNR(I), TMAXR(I), TMINR(I), 
+            WRITE(*,620) STAG(I), NNR(I), TMAXR(I), TMINR(I), 
      &        RADR(I), DAYLR(I), RAINR(I), CETR(I), W_photR(I), 
      &        W_growR(I), N_photR(I), N_growR(I), P_photR(I), P_growR(I)
           ELSE
