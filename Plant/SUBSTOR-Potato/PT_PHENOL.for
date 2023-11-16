@@ -102,7 +102,26 @@ C=======================================================================
          CALL PT_THTIME (  
      &      ISTAGE, L0, ST, TMAX, TMIN,                   !Input
      &      DTT, STT)                                     !Output
+         
+         DIF = 0.0 !Daytime plant-air temperature differential (oC) is assumed zero
+         TBD=5.5  !from Khan et al., 2019_Field_Crops_Res_242
+         TOD=23.4 !from Khan et al., 2019_Field_Crops_Res_242   
+         TCD=34.6 !from Khan et al., 2019_Field_Crops_Res_242
+         TSEN=1.6 !from Khan et al., 2019_Field_Crops_Res_242   
+         SBD=1.73 !Estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-171
+         SOD=23.9 !Estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-171    
+         SCD=36.7 !Estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-171
+         SSEN=0.8 !Estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-171   
 
+          CALL PT_BTHTIME (
+     &      ISTAGE, TMAX, TMIN, DIF, DAYL, TBD, TOD, TCD, TSEN, SBD, !Input
+     &      SOD, SCD, SSEN,  
+     &      TDU, SDU, ETRM)                                 !Output
+
+         ! replace DTT with the one calculated by PT_BTHTIME
+         DTT = TDU
+         STT = SDU
+         
          CUMDTT = CUMDTT + DTT            ! Update thermal time
          CUMSTT = CUMSTT + STT
       END IF
