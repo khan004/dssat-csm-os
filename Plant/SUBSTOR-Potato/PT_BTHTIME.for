@@ -97,3 +97,25 @@ C=======================================================================
         
       RETURN
       END SUBROUTINE PT_BTHTIME
+      
+C=======================================================================
+!=======================================================================
+!-----------------------------------------------------------------------
+! Variable definitions
+!-----------------------------------------------------------------------
+! DS      Development stage                            -       
+! TMAX    Daily maximum temperature                    oC      
+! TMIN    Daily minimum temperature                    oC      
+! DIF     Daytime plant-air temperature differential   oC      
+! DAYL    Astronomic daylength (base = 0 degrees)      h       
+! TBD     Base air temperature for phenology           oC     
+! SBD     Base soil temperature for phenology          oC      
+! TOD     Optimum air temperature for phenology        oC      
+! SOD     Optimum soil temperature for phenology       oC      
+! TCD     Ceiling air temperature for phenology        oC      
+! SCD     Ceiling soil temperature for phenology       oC           
+! TSEN    Curvature for air temperature response       -      
+! SSEN    Curvature for soil temperature response      -       
+! TDU     Daily thermal-day unit Air                   -       
+! SDU     Daily thermal-day unit Soil                  -             
+! ETRM    Daily mean temperature effect on maint. resp -       
