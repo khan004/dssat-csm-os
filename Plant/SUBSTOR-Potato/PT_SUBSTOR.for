@@ -111,7 +111,8 @@ C=======================================================================
      &    BIOMAS, DEADLF, GRAINN, ISTAGE, LFWT, MDATE,    !Input
      &    NLAYR, NSTRES, PLTPOP, RLV, ROOTN, RTDEP, RTWT, !Input
      &    SATFAC, SENESCE, STMWT, STOVN, STOVWT, SWFAC,   !Input
-     &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT)!Input
+     &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT, !Input
+     &    DTT)!Input By MSKhan
 
       CALL PT_OPHARV(CONTROL, ISWITCH, 
      &    AGEFAC, APTNUP, BIOMAS, GNUP, HARVFRAC, ISDATE, !Input
@@ -177,7 +178,8 @@ C=======================================================================
      &    BIOMAS, DEADLF, GRAINN, ISTAGE, LFWT, MDATE,    !Input
      &    NLAYR, NSTRES, PLTPOP, RLV, ROOTN, RTDEP, RTWT, !Input
      &    SATFAC, SENESCE, STMWT, STOVN, STOVWT, SWFAC,   !Input
-     &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT)!Input
+     &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT,!Input
+     &    DTT)!Input BY MSKhan
 
       CALL PT_OPHARV(CONTROL, ISWITCH, 
      &    AGEFAC, APTNUP, BIOMAS, GNUP, HARVFRAC, ISDATE, !Input
@@ -261,7 +263,8 @@ C=======================================================================
      &    BIOMAS, DEADLF, GRAINN, ISTAGE, LFWT, MDATE,    !Input
      &    NLAYR, NSTRES, PLTPOP, RLV, ROOTN, RTDEP, RTWT, !Input
      &    SATFAC, SENESCE, STMWT, STOVN, STOVWT, SWFAC,   !Input
-     &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT)!Input
+     &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT, !Input
+     &    DTT)!Input By MSKhan
 
       CALL PT_OPHARV(CONTROL, ISWITCH, 
      &    AGEFAC, APTNUP, BIOMAS, GNUP, HARVFRAC, ISDATE, !Input
@@ -284,7 +287,8 @@ C=======================================================================
      &    BIOMAS, DEADLF, GRAINN, ISTAGE, LFWT, MDATE,    !Input
      &    NLAYR, NSTRES, PLTPOP, RLV, ROOTN, RTDEP, RTWT, !Input
      &    SATFAC, SENESCE, STMWT, STOVN, STOVWT, SWFAC,   !Input
-     &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT)!Input
+     &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT,!Input
+     &    DTT)!Input BY MSKhan
 
       CALL PT_OPHARV(CONTROL, ISWITCH, 
      &    AGEFAC, APTNUP, BIOMAS, GNUP, HARVFRAC, ISDATE, !Input
