@@ -39,9 +39,9 @@ C=======================================================================
      &  PT_GROSUB, HRes_Ceres
       SAVE
 
-      CHARACTER*1  IDETG, ISWNIT, ISWWAT  ! members of derived type ISWITCH
-      CHARACTER*2  CROP ! member of dervied type CONTROL
-      CHARACTER*30 FILEIO ! member of derived type CONTROL
+      CHARACTER*1  IDETG, ISWNIT, ISWWAT  ! members of derived type ISWITCH (MSKhan)
+      CHARACTER*2  CROP ! member of dervied type CONTROL (MSKhan)
+      CHARACTER*30 FILEIO ! member of derived type CONTROL (MSKhan)
 
       INTEGER DYNAMIC, YREND, ISDATE, ISTAGE
       INTEGER MDATE, NLAYR, RUN, YRDOY, YREMRG, YRPLT, YRSIM
