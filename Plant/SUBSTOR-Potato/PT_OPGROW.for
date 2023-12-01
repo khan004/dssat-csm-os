@@ -334,7 +334,7 @@ C
      &       ,NINT(CUMSENSURF), NINT(CUMSENSOIL), DTT ! by MSKhan
  400      FORMAT (1X,I4,1X,I3.3,3(1X,I5),1X,F5.2,1X,F5.1,7(1X,I5),
      &          1X,F5.3,2(1X,I5),3(1X,F5.3),2(1X,F5.2),1X,F5.1,
-     &          2(1X,F5.2),1X,F5.3,6(1X,F5.2),F2.2 2I6) ! by MSKhan
+     &          2(1X,F5.2),1X,F5.3,6(1X,F5.2),1X,F2.2, 2I6) ! by MSKhan
         ENDIF
 
 C-----------------------------------------------------------------------
