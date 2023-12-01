@@ -31,7 +31,8 @@ C=======================================================================
       CHARACTER*1   IDETG, ISWNIT
       CHARACTER*12  OUTG, OUTPN
       CHARACTER*120 NITHEAD(4)
-      CHARACTER*220 GROHEAD(4)
+      !CHARACTER*220 GROHEAD(4)
+      CHARACTER*250 GROHEAD(4) ! By MSKhan
       CHARACTER*6, PARAMETER :: ERRKEY = 'OPGROW'
 
       INTEGER DAP, DAS, DOY, DYNAMIC, ERRNUM, FROP
@@ -164,7 +165,8 @@ C       Variable heading for GROWTH.OUT
         WRITE (NOUTDG,2192) GROHEAD(2)
         WRITE (NOUTDG,2192) GROHEAD(3)
         WRITE (NOUTDG,2192) GROHEAD(4)
- 2192   FORMAT (A219)
+ !2192   FORMAT (A219)
+ 2192   FORMAT (A249)         ! By MSKhan
 
         SEEDNO = 0.0
         GPP   = 0.0
