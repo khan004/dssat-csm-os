@@ -87,26 +87,26 @@ C-----------------------------------------------------------------------
      &'! YR       Days  Days  Grow       Fresh           
      &      Dry Weight                           Pod      Phot. Grow    
      &   Leaf Shell   Spec    Canopy          Root  ³    Root Length Den
-     &sity   ³ Senesced mass         Thermal     ', ! by MSKhan
+     &sity   ³ Senesced mass         Thermal Cumm.    ', ! by MSKhan
 
 !      DATA GROHEAD(2)/
      &'!   and   after after Stage  LAI  Yield  Leaf  St
      &em Tuber  Root  Crop  Tops DLeaf   HI   Wgt.   No.    Water     Ni
      &t.   Nit -ing   Leaf  Hght  Brdth      Depth  ³     cm3/cm3   of 
-     &soil    ³    (kg/ha)            Time    ', ! by MSKhan
+     &soil    ³    (kg/ha)            Time Thermal    ', ! by MSKhan
 
 !      DATA GROHEAD(3)/
      &'!     DOY   sim      plant             Mg/Ha  ³<------
      &--------- kg/Ha --------------->³      Kg/Ha        ³<Stress (0-1)
      &>³    %     %   Area    m     m           m   ³<------------------
-     &------>³ Surface  Soil              ',
+     &------>³ Surface  Soil            Time  ',
 
 !      DATA GROHEAD(4) / 
      &'@YEAR DOY   DAS   DAP  GSTD  LAID  UYAD  LWAD  
      &SWAD  UWAD  RWAD  TWAD  CWAD  DWAD  HIAD  EWAD  E#AD  WSPD  WSGD  
      &NSTD  LN%D  SH%D  SLAD  CHTD  CWID  EWSD  RDPD  RL1D  RL2D  RL3D  
 !     &RL4D  RL5D              '/
-     &RL4D  RL5D  SNW0C  SNW1C DTT'/  ! by MSKhan
+     &RL4D  RL5D  SNW0C  SNW1C DTT CUMDTT'/  ! by MSKhan
  
 C-----------------------------------------------------------------------
       DATA NITHEAD /
@@ -333,10 +333,10 @@ C
      &        NINT(PODWT*GM2KG),NINT(PODNO),1.0-SWFAC,1.0-TURFAC,
      &        1.0-NSTRES,PCNL,SHELPC,SLA,CANHT,CANWH,SATFAC,
      &        (RTDEP/100),(RLV(I),I=1,5)
-     &       ,NINT(CUMSENSURF), NINT(CUMSENSOIL), DTT ! by MSKhan
+     &       ,NINT(CUMSENSURF), NINT(CUMSENSOIL), DTT, CUMDTT ! by MSKhan
  400      FORMAT (1X,I4,1X,I3.3,3(1X,I5),1X,F5.2,1X,F5.1,7(1X,I5), ! by MSKhan
      &          1X,F5.3,2(1X,I5),3(1X,F5.3),2(1X,F5.2),1X,F5.1,
-     &          2(1X,F5.2),1X,F5.3,6(1X,F5.2),2X,F2.2, 2I6) ! by MSKhan
+     &          2(1X,F5.2),1X,F5.3,6(1X,F5.2),2X,F2.2,1X,F4.2, 2I6) ! by MSKhan
         ENDIF
 
 C-----------------------------------------------------------------------
