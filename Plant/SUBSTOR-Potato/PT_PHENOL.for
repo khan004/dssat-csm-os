@@ -25,7 +25,7 @@ C=======================================================================
                          ! which contain control information, soil
                          ! parameters, hourly weather data.
       IMPLICIT  NONE
-      EXTERNAL PT_IPPHEN, YR_DOY, PT_THTIME, PT_PHASEI
+      EXTERNAL PT_IPPHEN, YR_DOY, PT_THTIME, PT_PHASEI, PT_BTHTIME !MSKhan
       SAVE
 
       LOGICAL   COND, EMERGE
@@ -46,6 +46,7 @@ C=======================================================================
       REAL SEEDRV, SENLA, SPGROF, SPRLAP, SPRLTH, SPRWT, SWSD
       REAL TC, TCPLUS, TEMP, TII, TMAX, TMIN, TOPSN, TOTNUP, TSPRWT
       REAL XDEPTH, XDTT, XPLANT, XSTAGE
+      REAL DS, DIF, DAYL, TBD, TOD, TCD, TSEN, TDU, ETRM !MSKhan
 
       REAL, DIMENSION(NL) :: DLAYR, LL, ST, SW
 
@@ -83,6 +84,8 @@ C=======================================================================
       MAXLAI = 0.0
       RTF    = 0.0
       SENLA  = 0.0
+      TDU    = 0.0 !MSKhan
+      ETRM   = 0.0 !MSKhan
       TOTNUP = 0.0
       ISDATE = 0
 
@@ -102,7 +105,7 @@ C=======================================================================
          CALL PT_THTIME (  
      &      ISTAGE, L0, ST, TMAX, TMIN,                   !Input
      &      DTT, STT)                                     !Output
-         
+      ! Lines 108 till 126 added by MSKhan
          DIF = 0.0 !Daytime plant-air temperature differential (oC) is assumed zero
          TBD=5.5  !from Khan et al., 2019_Field_Crops_Res_242
          TOD=23.4 !from Khan et al., 2019_Field_Crops_Res_242   
