@@ -112,7 +112,7 @@ C=======================================================================
      &    NLAYR, NSTRES, PLTPOP, RLV, ROOTN, RTDEP, RTWT, !Input
      &    SATFAC, SENESCE, STMWT, STOVN, STOVWT, SWFAC,   !Input
      &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT, !Input
-     &    DTT)!Input By MSKhan
+     &    DTT, CUMDTT)!Input By MSKhan
 
       CALL PT_OPHARV(CONTROL, ISWITCH, 
      &    AGEFAC, APTNUP, BIOMAS, GNUP, HARVFRAC, ISDATE, !Input
@@ -179,7 +179,7 @@ C=======================================================================
      &    NLAYR, NSTRES, PLTPOP, RLV, ROOTN, RTDEP, RTWT, !Input
      &    SATFAC, SENESCE, STMWT, STOVN, STOVWT, SWFAC,   !Input
      &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT,!Input
-     &    DTT)!Input BY MSKhan
+     &    DTT, CUMDTT)!Input BY MSKhan
 
       CALL PT_OPHARV(CONTROL, ISWITCH, 
      &    AGEFAC, APTNUP, BIOMAS, GNUP, HARVFRAC, ISDATE, !Input
@@ -264,7 +264,7 @@ C=======================================================================
      &    NLAYR, NSTRES, PLTPOP, RLV, ROOTN, RTDEP, RTWT, !Input
      &    SATFAC, SENESCE, STMWT, STOVN, STOVWT, SWFAC,   !Input
      &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT, !Input
-     &    DTT)!Input By MSKhan
+     &    DTT, CUMDTT)!Input By MSKhan
 
       CALL PT_OPHARV(CONTROL, ISWITCH, 
      &    AGEFAC, APTNUP, BIOMAS, GNUP, HARVFRAC, ISDATE, !Input
@@ -288,7 +288,7 @@ C=======================================================================
      &    NLAYR, NSTRES, PLTPOP, RLV, ROOTN, RTDEP, RTWT, !Input
      &    SATFAC, SENESCE, STMWT, STOVN, STOVWT, SWFAC,   !Input
      &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT,!Input
-     &    DTT)!Input BY MSKhan
+     &    DTT, CUMDTT)!Input BY MSKhan
 
       CALL PT_OPHARV(CONTROL, ISWITCH, 
      &    AGEFAC, APTNUP, BIOMAS, GNUP, HARVFRAC, ISDATE, !Input
