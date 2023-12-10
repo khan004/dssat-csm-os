@@ -12,8 +12,8 @@ C  06/11/2002 GH  Modified for Y2K
 C=======================================================================
 
       SUBROUTINE PT_PHENOL (
-     &    DLAYR, FILEIO, GRAINN, ISWWAT, LL, MDATE, NLAYR,!Input
-     &    NSTRES, PLTPOP, RTWT, ST, SW, SWFAC, TMAX, TMIN,!Input
+     &    WEATHER, DLAYR, FILEIO, GRAINN, ISWWAT, LL, MDATE, !Input, MSKhan
+     &    NLAYR,NSTRES, PLTPOP, RTWT, ST, SW, SWFAC, TMAX, TMIN,!Input
      &    TOPSN, TWILEN, XLAI, YRDOY, YRPLT, YRSIM,       !Input
      &    APTNUP, CUMDTT, DTT, GNUP, GRORT, ISDATE,       !Output
      &    ISTAGE, MAXLAI, PLANTS, RTF, SEEDRV,            !Output
@@ -38,6 +38,7 @@ C=======================================================================
       INTEGER MDATE, NDAS, NLAYR, YEAR, YRDOY, YRPLT, YRSIM
       INTEGER YREMRG
       INTEGER STGDOY(20)
+      INTEGER DS
 
       REAL APTNUP, CTII, CUMDTT, CUMSTT, DTT
       REAL GNUP, GRAINN, GRF, GRORT, GROSPR, XLAI, MAXLAI
@@ -46,10 +47,14 @@ C=======================================================================
       REAL SEEDRV, SENLA, SPGROF, SPRLAP, SPRLTH, SPRWT, SWSD
       REAL TC, TCPLUS, TEMP, TII, TMAX, TMIN, TOPSN, TOTNUP, TSPRWT
       REAL XDEPTH, XDTT, XPLANT, XSTAGE
-      REAL DS, DIF, DAYL, TBD, TOD, TCD, TSEN, TDU, ETRM !MSKhan
+      REAL DIF, DAYL, TBD, TOD, TCD, TSEN, TDU, ETRM !MSKhan
 
       REAL, DIMENSION(NL) :: DLAYR, LL, ST, SW
+      Type (WeatherType) WEATHER
+      REAL DAYL
 
+      DAYL = WEATHER % DAYL
+      INTEGER DS                                      !MSKhan
 !***********************************************************************
 !***********************************************************************
 !     Seasonal Initialization - Called once per season
@@ -115,6 +120,16 @@ C=======================================================================
          SOD=23.9 !Estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-171    
          SCD=36.7 !Estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-171
          SSEN=0.8 !Estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-171   
+
+         ! DSSAT's ISTAGE to GECROSS DS (Development Stage) mapping
+         ! DS = 0 -> germination, emergence (ISTAGE 5, 6 & 7)
+         ! DS = 1 -> tuber initiation (ISTAGE 1)
+         ! DS = 2 -> maturity (ISTAGE 2)
+         !IF (ISTAGE .GE. 5 .AND. ISTAGE .LE. 7) THEN
+         !     DS = 0.0
+         !ELSE
+         !    DS = ISTAGE
+         !ENDIF
 
           CALL PT_BTHTIME (
      &      ISTAGE, TMAX, TMIN, DIF, DAYL, TBD, TOD, TCD, TSEN, SBD, !Input
