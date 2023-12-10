@@ -121,7 +121,7 @@ C=======================================================================
      &      SOD, SCD, SSEN,  
      &      TDU, SDU, ETRM)                                 !Output
 
-         ! replace DTT with the one calculated by PT_BTHTIME
+         ! replace DTT with the one calculated by PT_BTHTIME !MSKhan
          DTT = TDU
          STT = SDU
          
