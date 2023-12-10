@@ -10,10 +10,10 @@ C  02/08/1993 PWW Added switch block, etc.
 C  09/05/2001 CHP Modified for modular format
 C  08/20/2002 GH  Modified for Y2K
 C  07/08/2003 CHP Added senescence output to conform to other plant routines.
-C
+C  02/11/2023 Added Weather as parameter to fetch weather data (DAYL)
 C=======================================================================
 
-      SUBROUTINE PT_OPGROW (CONTROL, ISWITCH, 
+      SUBROUTINE PT_OPGROW (CONTROL, ISWITCH, WEATHER     !MSKhan
      &    BIOMAS, DEADLF, GRAINN, ISTAGE, LFWT, MDATE,    !Input
      &    NLAYR, NSTRES, PLTPOP, RLV, ROOTN, RTDEP, RTWT, !Input
      &    SATFAC, SENESCE, STMWT, STOVN, STOVWT, SWFAC,   !Input
@@ -54,7 +54,8 @@ C=======================================================================
       REAL WTNUP, WTNVEG
 
       REAL CUMSENSURF, CUMSENSOIL, CUMSENSURFN, CUMSENSOILN  
-
+      
+      REAL DAYL !MSKhan
       LOGICAL FEXIST, FIRST
 
 !-----------------------------------------------------------------------
@@ -63,6 +64,7 @@ C=======================================================================
 
 !     The variable "CONTROL" is of type "ControlType".
       TYPE (ControlType) CONTROL
+      TYPE (WeatherType) WEATHER !MSKhan
 
 !     The variable "ISWITCH" is of type "SwitchType".
       TYPE (SwitchType) ISWITCH
@@ -81,6 +83,8 @@ C=======================================================================
 
       ISWNIT  = ISWITCH % ISWNIT
 
+      !DAYL is embedded within WEATHER Variable Type
+      DAYL    = WEATHER % DAYL !MSKhan
 C-----------------------------------------------------------------------
       DATA GROHEAD /
 !      DATA GROHEAD(1)/
