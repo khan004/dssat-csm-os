@@ -32,6 +32,8 @@ C-----------------------------------------------------------------------
       STT = 0.0
 
       XTEMP = (TMAX + TMIN)/2.0
+      !  TMEAN  = (TMAX + TMIN)/2.0
+      !  TMEAN  = XTEMP 
       !
       ! Thermal time leaf expansion
       !
