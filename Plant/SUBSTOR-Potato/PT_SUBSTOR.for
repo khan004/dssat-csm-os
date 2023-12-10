@@ -25,7 +25,7 @@ C  08/23/2011 GH Added CO2 response for tuber growth
 C=======================================================================
 
       SUBROUTINE PT_SUBSTOR(CONTROL, ISWITCH,
-     &    CO2, EOP, HARVFRAC, NH4, NO3, SOILPROP, SRAD,   !Input
+     &    WEATHER, CO2, EOP, HARVFRAC, NH4, NO3, SOILPROP, SRAD,   !Input
      &    ST, SW, TMAX, TMIN, TRWUP, TWILEN, YREND, YRPLT,!Input
      &    CANHT, HARVRES, MDATE, NSTRES, PORMIN, RLV,     !Output
      &    RWUMX, SENESCE, STGDOY, UNH4, UNO3, XLAI)       !Output
@@ -68,6 +68,7 @@ C=======================================================================
       REAL, DIMENSION(NL) :: NH4, NO3, RLV, SAT, SHF
       REAL, DIMENSION(NL) :: ST, SW, UNO3, UNH4 
 
+      TYPE (WeatherType) WEATHER
 !     P variables
       REAL PConc_Shut, PConc_Root, PConc_Shel, PConc_Seed
 
@@ -108,6 +109,9 @@ C=======================================================================
       IF (DYNAMIC .EQ. RUNINIT) THEN
 !-----------------------------------------------------------------------
       CALL PT_OPGROW(CONTROL, ISWITCH, 
+! The arguments to PT_OPGROW at call site must match the type and
+! sequence of the parameters defined in PT_OPGROW subroutine declaration
+      CALL PT_OPGROW(CONTROL, ISWITCH, WEATHER,
      &    BIOMAS, DEADLF, GRAINN, ISTAGE, LFWT, MDATE,    !Input
      &    NLAYR, NSTRES, PLTPOP, RLV, ROOTN, RTDEP, RTWT, !Input
      &    SATFAC, SENESCE, STMWT, STOVN, STOVWT, SWFAC,   !Input
@@ -152,8 +156,8 @@ C=======================================================================
      &    CUMDEP, RLV, RTDEP)                             !Output
 
       CALL PT_PHENOL (
-     &    DLAYR, FILEIO, GRAINN, ISWWAT, LL, MDATE, NLAYR,!Input
-     &    NSTRES, PLTPOP, RTWT, ST, SW, SWFAC, TMAX, TMIN,!Input
+     &    WEATHER, DLAYR, FILEIO, GRAINN, ISWWAT, LL, MDATE, !Input
+     &    NLAYR, NSTRES, PLTPOP, RTWT, ST, SW, SWFAC, TMAX, TMIN,!Input
      &    TOPSN, TWILEN, XLAI, YRDOY, YRPLT, YRSIM,       !Input
      &    APTNUP, CUMDTT, DTT, GNUP, GRORT, ISDATE,       !Output
      &    ISTAGE, MAXLAI, PLANTS, RTF, SEEDRV,            !Output
@@ -174,7 +178,9 @@ C=======================================================================
 
       STGDOY(14) = YRSIM
 
-      CALL PT_OPGROW(CONTROL, ISWITCH, 
+! The arguments to PT_OPGROW at call site must match the type and
+! sequence of the parameters defined in PT_OPGROW subroutine declaration !MSKhan
+      CALL PT_OPGROW(CONTROL, ISWITCH, WEATHER,
      &    BIOMAS, DEADLF, GRAINN, ISTAGE, LFWT, MDATE,    !Input
      &    NLAYR, NSTRES, PLTPOP, RLV, ROOTN, RTDEP, RTWT, !Input
      &    SATFAC, SENESCE, STMWT, STOVN, STOVWT, SWFAC,   !Input
@@ -223,8 +229,8 @@ C=======================================================================
 
       IF (YRDOY .EQ. YRPLT .OR. ISTAGE .NE. 5) THEN
         CALL PT_PHENOL (
-     &    DLAYR, FILEIO, GRAINN, ISWWAT, LL, MDATE, NLAYR,!Input
-     &    NSTRES, PLTPOP, RTWT, ST, SW, SWFAC, TMAX, TMIN,!Input
+     &    WEATHER, DLAYR, FILEIO, GRAINN, ISWWAT, LL, MDATE, !Input
+     &    NLAYR, NSTRES, PLTPOP, RTWT, ST, SW, SWFAC, TMAX, TMIN,!Input
      &    TOPSN, TWILEN, XLAI, YRDOY, YRPLT, YRSIM,       !Input
      &    APTNUP, CUMDTT, DTT, GNUP, GRORT, ISDATE,       !Output
      &    ISTAGE, MAXLAI, PLANTS, RTF, SEEDRV,            !Output
@@ -259,7 +265,9 @@ C=======================================================================
         STGDOY(20) = YREND
       ENDIF
 
-      CALL PT_OPGROW(CONTROL, ISWITCH, 
+! The arguments to PT_OPGROW at call site must match the type and
+! sequence of the parameters defined in PT_OPGROW subroutine declaration !MSKhan
+      CALL PT_OPGROW(CONTROL, ISWITCH, WEATHER,
      &    BIOMAS, DEADLF, GRAINN, ISTAGE, LFWT, MDATE,    !Input
      &    NLAYR, NSTRES, PLTPOP, RLV, ROOTN, RTDEP, RTWT, !Input
      &    SATFAC, SENESCE, STMWT, STOVN, STOVWT, SWFAC,   !Input
@@ -283,7 +291,9 @@ C=======================================================================
 !     YIELD  = TUBWT*10.*PLANTS   !YIELD used by OPAHRV, OPOPS
       YIELD  = TUBWT*10.*PLTPOP   !CHP changed 
 
-      CALL PT_OPGROW(CONTROL, ISWITCH, 
+! The arguments to PT_OPGROW at call site must match the type and
+! sequence of the parameters defined in PT_OPGROW subroutine declaration !MSKhan
+      CALL PT_OPGROW(CONTROL, ISWITCH, WEATHER,
      &    BIOMAS, DEADLF, GRAINN, ISTAGE, LFWT, MDATE,    !Input
      &    NLAYR, NSTRES, PLTPOP, RLV, ROOTN, RTDEP, RTWT, !Input
      &    SATFAC, SENESCE, STMWT, STOVN, STOVWT, SWFAC,   !Input
