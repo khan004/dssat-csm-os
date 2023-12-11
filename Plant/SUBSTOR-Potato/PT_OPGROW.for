@@ -18,7 +18,7 @@ C=======================================================================
      &    NLAYR, NSTRES, PLTPOP, RLV, ROOTN, RTDEP, RTWT, !Input
      &    SATFAC, SENESCE, STMWT, STOVN, STOVWT, SWFAC,   !Input
      &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT,!Input
-     &    DTT, CUMDTT, STT, CUMSTT)!Input (By MSKhan)
+     &    DTT, CUMDTT, STT, CUMSTT) !Input (By MSKhan)
    !-----------------------------------------------------------------------
       USE ModuleDefs     !Definitions of constructed variable types, 
                          ! which contain control information, soil
@@ -43,9 +43,9 @@ C=======================================================================
       REAL SLA,PCNL,TURFAC,CANHT,CANWH,RLV(20),HI,SHELPC,SHELLW
       REAL SDSIZE,PODNO,RTDEP,NSTRES,SWFAC,SATFAC,PLTPOP,GM2KG
       REAL FRYLD,DEADLF, GRAINN
-      REAL DTT !By MSKhan
-
-      REAL LFWT, GPP, PCNGRN, PCNRT
+      REAL DTT, CUMDTT, STT, CUMSTT !By MSKhan
+      REAL, PARAMETER :: FRYLDTHRESH = 0.1  !By MSKhan
+      REAL LFWT, GPP, PCNGRN, PCNRT 
       REAL PCNST, PCNVEG, ROOTN
       REAL STOVN, STOVWT
       REAL TUBN, TUBWT, WTNCAN
