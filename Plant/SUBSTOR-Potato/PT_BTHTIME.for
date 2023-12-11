@@ -12,7 +12,7 @@ C=======================================================================
 
       SUBROUTINE PT_BTHTIME (
      &    ISTAGE, TMAX, TMIN, DIF, DAYL, TBD, TOD, TCD, TSEN, SBD,  !Input
-     &    SOD, SCD, SSEN,         !Input
+     &    SOD, SCD, SSEN,                                           !Input
      &    TDU, SDU, ETRM)                                           !Output
       IMPLICIT NONE
       !INTEGER DS
@@ -120,7 +120,7 @@ C=======================================================================
 
 !*---instantaneous thermal unit based on bell-shaped temperature response
  !       IF (SD.LT.TBD .OR. SD.GT.TCD) THEN
-           SU = 0.0
+  !         SU = 0.0
        ! ELSE
          !  SU = (((TCD-TD)/(TCD-TOD))*((TD-TBD)/(TOD-TBD))**
  !    &          ((TOD-TBD)/(TCD-TOD)))**TSEN
