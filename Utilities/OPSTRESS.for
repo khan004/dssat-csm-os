@@ -323,7 +323,7 @@
 
         IF (RNMODE .EQ. 'I' .AND. NYRS .LE. 1) THEN
           IF (RAINR(I) < 1000.) THEN
-            WRITE(*,620) STAG(I), NNR(I), TMAXR(I), TMINR(I), 
+            WRITE(*,620) STAG(I), NNR(I), TMAXR(I), TMINR(I), !fix the crash due to wrong format (MSKhan)
      &        RADR(I), DAYLR(I), RAINR(I), CETR(I), W_photR(I), 
      &        W_growR(I), N_photR(I), N_growR(I), P_photR(I), P_growR(I)
 620       FORMAT(1X,A23,I5,4F6.1,F7.2,4F7.1,6F7.3)
