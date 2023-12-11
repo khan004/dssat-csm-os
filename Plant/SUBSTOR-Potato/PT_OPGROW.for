@@ -18,9 +18,8 @@ C=======================================================================
      &    NLAYR, NSTRES, PLTPOP, RLV, ROOTN, RTDEP, RTWT, !Input
      &    SATFAC, SENESCE, STMWT, STOVN, STOVWT, SWFAC,   !Input
      &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT,!Input
-     &    DTT)!Input (By MSKhan)
-
-!-----------------------------------------------------------------------
+     &    DTT, CUMDTT, STT, CUMSTT)!Input (By MSKhan)
+   !-----------------------------------------------------------------------
       USE ModuleDefs     !Definitions of constructed variable types, 
                          ! which contain control information, soil
                          ! parameters, hourly weather data.

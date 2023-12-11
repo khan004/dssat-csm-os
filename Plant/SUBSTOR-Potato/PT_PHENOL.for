@@ -17,7 +17,7 @@ C=======================================================================
      &    TOPSN, TWILEN, XLAI, YRDOY, YRPLT, YRSIM,       !Input
      &    APTNUP, CUMDTT, DTT, GNUP, GRORT, ISDATE,       !Output
      &    ISTAGE, MAXLAI, PLANTS, RTF, SEEDRV,            !Output
-     &    STGDOY, STT, TOTNUP, XSTAGE, YREMRG,            !Output
+     &    STGDOY, STT, TOTNUP, XSTAGE, YREMRG,CUMSTT,    !Output !Added by MSKhan
      &    DYNAMIC)
 
 !-----------------------------------------------------------------------
@@ -47,7 +47,7 @@ C=======================================================================
       REAL SEEDRV, SENLA, SPGROF, SPRLAP, SPRLTH, SPRWT, SWSD
       REAL TC, TCPLUS, TEMP, TII, TMAX, TMIN, TOPSN, TOTNUP, TSPRWT
       REAL XDEPTH, XDTT, XPLANT, XSTAGE
-      REAL DIF, DAYL, TBD, TOD, TCD, TSEN, TDU, ETRM !MSKhan
+      REAL DIF, DAYL, TBD, TOD, TCD, TSEN, TDU, ETRM, SDU !MSKhan
 
       REAL, DIMENSION(NL) :: DLAYR, LL, ST, SW
       Type (WeatherType) WEATHER
@@ -85,6 +85,7 @@ C=======================================================================
       CUMDTT = 0.0
       CUMSTT = 0.0
       DTT    = 0.0
+      STT    = 0.0
       GNUP   = 0.0
       MAXLAI = 0.0
       RTF    = 0.0
@@ -173,7 +174,7 @@ C-----------------------------------------------------------------------
         ! ISTAGE 5: pre-planting
         ! ISTAGE 6: planting to germination
         ! ISTAGE 7: germination to emergence
-        ! ISTAGE 1: vegetative to initiation
+        ! ISTAGE 1: vegetative to tuber initiation
         ! ISTAGE 2: initiation to maturity
         !
 C-----------------------------------------------------------------------

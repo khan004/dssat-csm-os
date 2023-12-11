@@ -49,7 +49,7 @@ C=======================================================================
 
       REAL AGEFAC, APTNUP, BIOMAS, BWAH, CANNAA, CANWAA
       REAL CANHT, CNSD1, CNSD2, CO2
-      REAL CUMDEP, CUMDTT, DEADLF, DTT, EOP, EP1, GNUP
+      REAL CUMDEP, CUMDTT, CUMSTT, DEADLF, DTT, EOP, EP1, GNUP !MSKhan
       REAL GRAINN, GRNWT, GRORT, LFWT, MAXLAI, NSTRES
       REAL PLANTS, PLTPOP, PODWT, ROOTN, RTDEP, RTF
       REAL RTWT, SDWTAH, SDWTPL, SEEDNI, SEEDRV, SRAD, STMWT, STOVN
@@ -116,7 +116,7 @@ C=======================================================================
      &    NLAYR, NSTRES, PLTPOP, RLV, ROOTN, RTDEP, RTWT, !Input
      &    SATFAC, SENESCE, STMWT, STOVN, STOVWT, SWFAC,   !Input
      &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT, !Input
-     &    DTT, CUMDTT)!Input By MSKhan
+     &    DTT, CUMDTT, STT, CUMSTT)!Input By MSKhan
 
       CALL PT_OPHARV(CONTROL, ISWITCH, 
      &    AGEFAC, APTNUP, BIOMAS, GNUP, HARVFRAC, ISDATE, !Input
@@ -161,7 +161,7 @@ C=======================================================================
      &    TOPSN, TWILEN, XLAI, YRDOY, YRPLT, YRSIM,       !Input
      &    APTNUP, CUMDTT, DTT, GNUP, GRORT, ISDATE,       !Output
      &    ISTAGE, MAXLAI, PLANTS, RTF, SEEDRV,            !Output
-     &    STGDOY, STT, TOTNUP, XSTAGE, YREMRG,            !Output
+     &    STGDOY, STT, TOTNUP, XSTAGE, YREMRG,CUMSTT,            !Output
      &    SEASINIT)
 
       CALL PT_GROSUB (SEASINIT,
@@ -185,7 +185,7 @@ C=======================================================================
      &    NLAYR, NSTRES, PLTPOP, RLV, ROOTN, RTDEP, RTWT, !Input
      &    SATFAC, SENESCE, STMWT, STOVN, STOVWT, SWFAC,   !Input
      &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT,!Input
-     &    DTT, CUMDTT)!Input BY MSKhan
+     &    DTT, CUMDTT, STT, CUMSTT)!Input BY MSKhan
 
       CALL PT_OPHARV(CONTROL, ISWITCH, 
      &    AGEFAC, APTNUP, BIOMAS, GNUP, HARVFRAC, ISDATE, !Input
@@ -234,7 +234,7 @@ C=======================================================================
      &    TOPSN, TWILEN, XLAI, YRDOY, YRPLT, YRSIM,       !Input
      &    APTNUP, CUMDTT, DTT, GNUP, GRORT, ISDATE,       !Output
      &    ISTAGE, MAXLAI, PLANTS, RTF, SEEDRV,            !Output
-     &    STGDOY, STT, TOTNUP, XSTAGE, YREMRG,            !Output
+     &    STGDOY, STT, TOTNUP, XSTAGE, YREMRG, CUMSTT,    !Output
      &    RATE)
       ENDIF
 
@@ -272,7 +272,7 @@ C=======================================================================
      &    NLAYR, NSTRES, PLTPOP, RLV, ROOTN, RTDEP, RTWT, !Input
      &    SATFAC, SENESCE, STMWT, STOVN, STOVWT, SWFAC,   !Input
      &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT, !Input
-     &    DTT, CUMDTT)!Input By MSKhan
+     &    DTT, CUMDTT, STT, CUMSTT)!Input By MSKhan
 
       CALL PT_OPHARV(CONTROL, ISWITCH, 
      &    AGEFAC, APTNUP, BIOMAS, GNUP, HARVFRAC, ISDATE, !Input
@@ -298,7 +298,7 @@ C=======================================================================
      &    NLAYR, NSTRES, PLTPOP, RLV, ROOTN, RTDEP, RTWT, !Input
      &    SATFAC, SENESCE, STMWT, STOVN, STOVWT, SWFAC,   !Input
      &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT,!Input
-     &    DTT, CUMDTT)!Input BY MSKhan
+     &    DTT, CUMDTT, STT, CUMSTT)!Input BY MSKhan
 
       CALL PT_OPHARV(CONTROL, ISWITCH, 
      &    AGEFAC, APTNUP, BIOMAS, GNUP, HARVFRAC, ISDATE, !Input

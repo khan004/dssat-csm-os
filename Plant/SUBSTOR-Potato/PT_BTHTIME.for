@@ -19,7 +19,7 @@ C=======================================================================
       INTEGER ISTAGE
       REAL TMAX, TMIN, DIF, DAYL, TBD, TOD, TCD, TSEN, TDU, SDU, ETRM
       REAL SBD, SOD, SCD, SSEN
-      REAL SUNRIS, SUNSET, TMEAN, TT, ST, ETR, TD, SU, TU, Q10, IETR
+      REAL SUNRIS, SUNSET, TMEAN, TT, ST, ETR, TD, SD, SU, TU, Q10, IETR
       INTEGER I
       SAVE
 
@@ -94,7 +94,46 @@ C=======================================================================
 
 !*---daily average of temperature effect on maintenance respiration
       ETRM = ETR
-        
+      
+      !RETURN
+      !END SUBROUTINE PT_BTHTIME
+         ! END IF
+      !END IF
+!*-------------------------------------------------------------------
+! Soil thermal time (tuber)
+      !
+      !*---diurnal course of temperature
+      !DO 10 I = 1, 24
+ !       IF (I.GE.SUNRIS .AND. I.LE.SUNSET) THEN
+ !         SD = TMEAN+DIF+0.5*ABS(TMAX-TMIN)*COS(0.2618*FLOAT(I-14))
+ !       ELSE
+!         SD = TMEAN    +0.5*ABS(TMAX-TMIN)*COS(0.2618*FLOAT(I-14))
+!        ENDIF
+
+!*---assuming development rate at supra-optimum (above optimum) temperatures during
+!*   the reproductive phase equals that at the optimum temperature
+!        IF (DS.GT.1.) THEN
+!           SD = MIN (SD,TOD)
+!        ELSE
+!           SD = SD
+!      ENDIF
+
+!*---instantaneous thermal unit based on bell-shaped temperature response
+ !       IF (SD.LT.TBD .OR. SD.GT.TCD) THEN
+           SU = 0.0
+       ! ELSE
+         !  SU = (((TCD-TD)/(TCD-TOD))*((TD-TBD)/(TOD-TBD))**
+ !    &          ((TOD-TBD)/(TCD-TOD)))**TSEN
+        !ENDIF
+
+        !ST = ST + SU/24.0
+
+!*---daily thermal unit for phenology
+      !  SDU  = ST
+      !RETURN
+ !    END SUBROUTINE PT_BTHTIME
+      
+      
       RETURN
       END SUBROUTINE PT_BTHTIME
       
