@@ -126,7 +126,7 @@ C=======================================================================
      &    ISTAGE, MAXLAI, MDATE, NSTRES, PLTPOP, SDWT,    !Input
      &    SDWTPL, SEEDNO, STGDOY, STOVWT, SWFAC, TOTNUP,  !Input
      &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI,       !Input
-     &    YIELD, YRPLT, WMAX, TB,                          !Input
+     &    YIELD, YRPLT, WMAX, TB,                         !Input
      &    BWAH, SDWTAH, WTNSD)                            !Output
 
 !***********************************************************************
@@ -162,10 +162,10 @@ C=======================================================================
      &    WEATHER, DLAYR, FILEIO, GRAINN, ISWWAT, LL, MDATE, NLAYR,!Input
      &    NSTRES, PLTPOP, RTWT, ST, SW, SWFAC, TMAX, TMIN,!Input
      &    TOPSN, TWILEN, XLAI, YRDOY, YRPLT, YRSIM,       !Input
-     &    APTNUP, CUMDTT, DTT, GNUP, GRORT, ISDATE,       !Output !reason of putting CUMDTT? Khan
+     &    APTNUP, CUMDTT, DTT, GNUP, GRORT, ISDATE,       !Output 
      &    ISTAGE, MAXLAI, PLANTS, RTF, SEEDRV,            !Output
      &    STGDOY, STT, TOTNUP, XSTAGE, YREMRG, CUMSTT,    !Output 
-     &    SEASINIT) !Output !why  different than decalaration? Khan
+     &    SEASINIT)                                       !Output 
 
       CALL PT_GROSUB (SEASINIT,
      &    CO2, CUMDTT, DLAYR, DTT, DUL, FILEIO,           !Input
@@ -180,8 +180,7 @@ C=======================================================================
      &    UNH4, UNO3, WTNCAN, WTNLO, WTNUP, XLAI)         !Output
 
       STGDOY(14) = YRSIM
-! The arguments to PT_OPGROW at call site must match the type and
-! sequence of the parameters defined in PT_OPGROW subroutine declaration
+
       CALL PT_OPGROW(CONTROL, ISWITCH, WEATHER,
      &    BIOMAS, DEADLF, GRAINN, ISTAGE, LFWT, MDATE,    !Input
      &    NLAYR, NSTRES, PLTPOP, RLV, ROOTN, RTDEP, RTWT, !Input
@@ -232,8 +231,7 @@ C=======================================================================
         ENDIF
       ENDIF
 
-      IF (YRDOY .EQ. YRPLT .OR. ISTAGE .NE. 5) THEN ! ISTAGE is 5 at the start of simulation
-          ! First run of PT_PHENOL updates ISTAGE from 5 to 7
+      IF (YRDOY .EQ. YRPLT .OR. ISTAGE .NE. 5) THEN 
         CALL PT_PHENOL (  
      &    WEATHER, DLAYR, FILEIO, GRAINN, ISWWAT, LL, MDATE, !Input
      &    NLAYR, NSTRES, PLTPOP, RTWT, ST, SW, SWFAC, TMAX, TMIN,!Input
@@ -241,12 +239,11 @@ C=======================================================================
      &    APTNUP, CUMDTT, DTT, GNUP, GRORT, ISDATE,       !Output
      &    ISTAGE, MAXLAI, PLANTS, RTF, SEEDRV,            !Output
      &    STGDOY, STT, TOTNUP, XSTAGE, YREMRG, CUMSTT,    !Output
-     &    RATE) ! Different than decalaration Khan
+     &    RATE) 
       ENDIF
-!PT_GROSUB is called only during ISTAGE 1: vegetative to tuber initiation and ISTAGE 2: initiation to maturity
 
       IF (ISTAGE .LT. 5) THEN
-        CALL PT_GROSUB (RATE,                             ! PT_GROSUB is called during ISTAGE 1 and 2
+        CALL PT_GROSUB (RATE,                             
      &    CO2, CUMDTT, DLAYR, DTT, DUL, FILEIO,           !Input
      &    ISTAGE, ISWNIT, KG2PPM, LL, NH4, NLAYR, NO3,    !Input
      &    RLV, RTF, SAT, SLPF, SRAD, STGDOY, STT, SW,     !Input
@@ -278,7 +275,7 @@ C=======================================================================
      &    NLAYR, NSTRES, PLTPOP, RLV, ROOTN, RTDEP, RTWT, !Input
      &    SATFAC, SENESCE, STMWT, STOVN, STOVWT, SWFAC,   !Input
      &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT, DTT, !Input
-     &    CUMDTT, STT, CUMSTT) !Input added by Khan
+     &    CUMDTT, STT, CUMSTT) !Input 
 
       CALL PT_MATURITY(CONTROL,
      &    TUBWT, PLTPOP, DTT, STT,                        !Input
@@ -289,7 +286,7 @@ C=======================================================================
      &    ISTAGE, MAXLAI, MDATE, NSTRES, PLTPOP, SDWT,    !Input
      &    SDWTPL, SEEDNO, STGDOY, STOVWT, SWFAC, TOTNUP,  !Input
      &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI,       !Input
-     &    YIELD, YRPLT,  WMAX, TB,                  !Input
+     &    YIELD, YRPLT,  WMAX, TB,                        !Input
      &    BWAH, SDWTAH, WTNSD)                            !Output
 
 !***********************************************************************
@@ -307,19 +304,19 @@ C=======================================================================
      &    BIOMAS, DEADLF, GRAINN, ISTAGE, LFWT, MDATE,    !Input
      &    NLAYR, NSTRES, PLTPOP, RLV, ROOTN, RTDEP, RTWT, !Input
      &    SATFAC, SENESCE, STMWT, STOVN, STOVWT, SWFAC,   !Input
-     &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT, DTT, !Input
-     &    CUMDTT, STT, CUMSTT) !Input added by Khan
+     &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI,       !Input
+     &    YRPLT, DTT, CUMDTT, STT, CUMSTT)                !Input 
 
       CALL PT_MATURITY(CONTROL,
      &    TUBWT, PLTPOP, DTT, STT,                        !Input
-     &    MDATE, TB, WB, WMAX)                       !Output
+     &    MDATE, TB, WB, WMAX)                            !Output
 
       CALL PT_OPHARV(CONTROL, ISWITCH, 
      &    AGEFAC, APTNUP, BIOMAS, GNUP, HARVFRAC, ISDATE, !Input
      &    ISTAGE, MAXLAI, MDATE, NSTRES, PLTPOP, SDWT,    !Input
      &    SDWTPL, SEEDNO, STGDOY, STOVWT, SWFAC, TOTNUP,  !Input
      &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI,       !Input
-     &    YIELD, YRPLT, WMAX, TB,                   !Input
+     &    YIELD, YRPLT, WMAX, TB,                         !Input
      &    BWAH, SDWTAH, WTNSD)                            !Output
 
       PODWT = 0.0

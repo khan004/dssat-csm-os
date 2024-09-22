@@ -13,11 +13,11 @@ C=======================================================================
 
       SUBROUTINE PT_PHENOL (
      &    WEATHER, DLAYR, FILEIO, GRAINN, ISWWAT, LL, MDATE, !Input
-     &    NLAYR, NSTRES, PLTPOP, RTWT, ST, SW, SWFAC, TMAX, TMIN,!Input
-     &    TOPSN, TWILEN, XLAI, YRDOY, YRPLT, YRSIM,       !Input
-     &    APTNUP, CUMDTT, DTT, GNUP, GRORT, ISDATE,       !Output
-     &    ISTAGE, MAXLAI, PLANTS, RTF, SEEDRV,            !Output
-     &    STGDOY, STT, TOTNUP, XSTAGE, YREMRG, CUMSTT,    !Output !Added by Khan
+     &    NLAYR, NSTRES, PLTPOP, RTWT, ST, SW, SWFAC, TMAX,  !Input
+     &    TMIN, TOPSN, TWILEN, XLAI, YRDOY, YRPLT, YRSIM,    !Input
+     &    APTNUP, CUMDTT, DTT, GNUP, GRORT, ISDATE,          !Output
+     &    ISTAGE, MAXLAI, PLANTS, RTF, SEEDRV,               !Output
+     &    STGDOY, STT, TOTNUP, XSTAGE, YREMRG, CUMSTT,       !Output 
      &    DYNAMIC)
 
 !-----------------------------------------------------------------------
@@ -25,7 +25,7 @@ C=======================================================================
                          ! which contain control information, soil
                          ! parameters, hourly weather data.
       IMPLICIT  NONE
-      EXTERNAL PT_IPPHEN, YR_DOY, PT_THTIME, PT_PHASEI, PT_BTHTIME_2    
+      EXTERNAL PT_IPPHEN, YR_DOY, PT_THTIME, PT_PHASEI, PT_BTHTIME    
       SAVE
 
       LOGICAL   COND, EMERGE
@@ -47,8 +47,8 @@ C=======================================================================
       REAL SEEDRV, SENLA, SPGROF, SPRLAP, SPRLTH, SPRWT, SWSD
       REAL TC, TCPLUS, TEMP, TII, TMAX, TMIN, TOPSN, TOTNUP, TSPRWT
       REAL XDEPTH, XDTT, XPLANT, XSTAGE
-      REAL TBD, TOD, TCD, TSEN, TDU_1, SDU_1, SBD, SOD, SCD, DIF ! Added by Khan
-      REAL SSEN, DTT, TDU_2, SDU_2 ! Added by Khan
+      REAL TBD, TOD, TCD, TSEN, TDU, SDU, SBD, SOD, SCD  
+      REAL SSEN, DTT !
 
       REAL, DIMENSION(NL) :: DLAYR, LL, ST, SW
       Type (WeatherType) WEATHER
@@ -92,10 +92,8 @@ C=======================================================================
       RTF    = 0.0
       SENLA  = 0.0
       TOTNUP = 0.0
-      TDU_1  = 0.0
-      SDU_1  = 0.0
-      TDU_2  = 0.0
-      SDU_2  = 0.0
+      TDU    = 0.0
+      SDU    = 0.0
       ISDATE = 0
 
 !***********************************************************************
@@ -116,34 +114,25 @@ C=======================================================================
      &      ISTAGE, L0, ST, TMAX, TMIN,                   !Input
      &      DTT, STT)                                     !Output
 
-         !DIF = 0.0 !Daytime plant-air temperature differential (oC) is assumed zero
+         !Khan: Introduced cardinal temperatures required for estimating beta thermal time
+         ! These can be moved to ECO file
          TBD=5.5  !from Khan et al., 2019_Field_Crops_Res_242
          TOD=23.4 !from Khan et al., 2019_Field_Crops_Res_242   
          TCD=34.6 !from Khan et al., 2019_Field_Crops_Res_242
          TSEN=1.6 !from Khan et al., 2019_Field_Crops_Res_242  
-         !TBD=2.0  !Griffin et al., 1993 (SUBSTOR-Potato version 2.0)
-         !TOD=24.0 !Griffin et al., 1993 (SUBSTOR-Potato version 2.0)
-         !TCD=35.0 !Griffin et al., 1993 (SUBSTOR-Potato version 2.0)
-         !TSEN=0.2 !Assumed 
-         !TSEN=1.0 !Assumed 
-         SBD=2.0 !Estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-171
+         SBD=2.0  !Estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-171
          SOD=24.0 !Estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-171    
          SCD=36.0 !Estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-171
          SSEN=0.7 !Estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-171 
-         !SBD=2.0  !Griffin et al., 1993 (SUBSTOR-Potato version 2.0)
-         !SOD=23.0 !Griffin et al., 1993 (SUBSTOR-Potato version 2.0)   
-         !SCD=33.0 !Griffin et al., 1993 (SUBSTOR-Potato version 2.0)
-         !SSEN=0.3 !Assumed 
-         !SSEN=1.0 !Assumed 
 
-       CALL PT_BTHTIME_2 (
+       CALL PT_BTHTIME (
      &     ISTAGE, L0, ST, TMAX, TMIN, TBD, TOD, TCD,  !Input
      &     TSEN, SBD, SOD, SCD, SSEN,    
-     &     TDU_2, SDU_2)                                 !Output
+     &     TDU, SDU)                                   !Output
 
-         ! replace DTT & STT with the one calculated by PT_BTHTIME_2
-         DTT = TDU_2
-         STT = SDU_2
+!        Khan: replace DTT & STT with the one calculated by PT_BTHTIME
+         DTT = TDU    ! If commented, DTT will be based on DSSAT default PT_THTIME.for
+         STT = SDU    ! If commented, STT will be based on DSSAT default PT_THTIME.for
 
          CUMDTT = CUMDTT + DTT            ! Update thermal time
          CUMSTT = CUMSTT + STT
@@ -288,7 +277,7 @@ C-----------------------------------------------------------------------
              STGDOY(ISTAGE) = YRDOY
              YREMRG = YRDOY       !CHP 12/4/01
              XSTAGE = 1.0
-             DTT    = STT !Khan: reason?
+             DTT    = STT 
              CALL PT_PHASEI ( 
      &         ISTAGE, CUMDTT, XPLANT, SPRLAP,            !I/O
      &         CTII, CUMSTT, MAXLAI, SENLA, TSPRWT, XDTT) !Output

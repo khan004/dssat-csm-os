@@ -6,16 +6,16 @@ C-----------------------------------------------------------------------
 C  Revision history
 C
 C               Written
-C  12/07/2023 MSKhan added the subject sub-routine following 
-C  Khan et al., 2023 
-C=======================================================================
+C  12/07/2023 MSKhan added the maturity sub-routine following the approach
+C  of Khan et al., 2019_Field_Crops_Res_242 
+C========================================================================
       
       SUBROUTINE PT_MATURITY(CONTROL,
-     &    TUBWT, PLTPOP, DTT, STT,                !Input
+     &    TUBWT, PLTPOP, DTT, STT,           !Input
      &    MDATE, TB, WB, WMAX)               !Output
       
 C-----------------------------------------------------------------------
-      USE ModuleDefs     !Definitions of constructed variable types, 
+      USE ModuleDefs     ! Definitions of constructed variable types, 
                          ! which contain control information, soil
                          ! parameters, hourly weather data.  
       IMPLICIT NONE
@@ -24,11 +24,11 @@ C-----------------------------------------------------------------------
       INTEGER DYNAMIC, YRDOY, MDATE, TB
       
       REAL TUBWT, PLTPOP
-      REAL YIELD, FRYLD
+      REAL FRYLD
       REAL DTT, STT, TDIFF
       REAL W, WB, WPREV, WDIFF
       REAL CM, RM, WDIFFRATE
-      REAL G2, G3, WMAX, TUBDM
+      REAL G2, G3, WMAX
       REAL, PARAMETER :: THRESH = 0.05
       LOGICAL FOUND_WMAX
       
@@ -39,7 +39,6 @@ C-----------------------------------------------------------------------
       DYNAMIC = CONTROL % DYNAMIC
 
       FRYLD = 0.0
-      YIELD = 0.0
       W = 0.0
       WDIFF = 0.0
       WDIFFRATE = 0.0
@@ -56,43 +55,37 @@ C-----------------------------------------------------------------------
           RETURN
       ENDIF
 
-      ! CM = 23.2 ! Growth rate in the linear phase, g/m^2 day
-      CM = G3
+      CM = G3   ! Potential tuber growth rate (g/m2 d)
       RM = 0.34 ! Relative growth rate in exponential phase g/m^2
-      TUBDM = 0.2 !Default value = 0.2
 
-      FRYLD = (TUBWT*10.*PLTPOP/1000.)/TUBDM   ! Fresh yield, from PT_OPGROW L.No. 273
-      YIELD  = TUBWT*10.*PLTPOP              !  Dry yield, from PT_SUBSTOR L.No. 302
-
+      FRYLD = (TUBWT*10.*PLTPOP/1000.)/0.2   ! Fresh yield, from PT_OPGROW L.No. 273
+      
 !     FRYLD is Mg/Ha while while CM and RM are in g/m^2
 !     Multiply by 0.01 for g/m^2 to Mg/Ha (1Ha = 10000 m^2,
 !     1Mg=1000000g)
-      ! FRYLDB = ((CM/RM)*log(2.0)) * 0.01   ! WB
-      WB = ((CM/RM)*log(2.0)) * 0.01          ! WB
+      WB = ((CM/RM)*log(2.0)) * 0.01         ! Tuber weight at TB
 
       W = FRYLD   ! uncommented: based on fresh yield
-      !W = YIELD  ! uncommented: based on dry yield
-      !TDIFF = DTT
-      TDIFF = STT !Reason? REF to PT_GROSUB L.No 515; 628)
+      TDIFF = STT ! REF to PT_GROSUB L.No 515; 628)
 
       ! Find first point (Tb) where W greater than or equal to Wb
       IF (.NOT. FOUND_WMAX .AND. W .GE. WB) THEN
         IF (TB .EQ. 0) THEN 
-        TB = YRDOY !ISDATE means tuber inititation date
+        TB = YRDOY !TB means tuber inititation date based on PT_MATURITY.for
 
       ENDIF
 
         ! Approximate the derivative/rate of change of the tuber weight
         ! using finite difference method. The point where derivate becomes
         ! almost 0 (tunable via threshold) is the point where tuber weight
-        ! becomes maximum, indicating maturity
-        IF (WPREV .GT. 0.0 .AND. TDIFF .GT. 0.0) THEN ! Avoid division by 0
-          WDIFF = ABS(W - WPREV)                      !Y2-Y1
-          WDIFFRATE = WDIFF / TDIFF                   !Y2-Y1/X2-X1
+        ! becomes maximum i.e., WMAX, indicating time of physiological maturity
+        IF (WPREV .GT. 0.0 .AND. TDIFF .GT. 0.0) THEN 
+          WDIFF = ABS(W - WPREV)                      
+          WDIFFRATE = WDIFF / TDIFF                   
           IF (WDIFFRATE .LE. THRESH) THEN
             FOUND_WMAX = .TRUE.
-            MDATE = YRDOY
-            WMAX = W
+            MDATE = YRDOY ! MDATE means time of physiolgical maturity
+            WMAX = W      ! WMAX means tuber fresh weight at physiological maturity
           ENDIF
         END IF
         WPREV = W
