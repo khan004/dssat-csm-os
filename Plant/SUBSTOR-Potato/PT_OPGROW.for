@@ -36,13 +36,12 @@ C=======================================================================
       INTEGER I, ISTAGE, L, LUNIO, NLAYR
       INTEGER NOUTPN, NOUTDG, RUN, RSTAGE, TIMDIF
       INTEGER YEAR, YRDOY, MDATE, YRPLT
-      REAL DTT, CUMDTT, STT, CUMSTT !Added by Khan
+      REAL DTT, CUMDTT, STT, CUMSTT 
  
       REAL XLAI,STMWT,SDWT,WTLF,BIOMAS,RTWT,PODWT,SEEDNO
       REAL SLA,PCNL,TURFAC,CANHT,CANWH,RLV(20),HI,SHELPC,SHELLW
       REAL SDSIZE,PODNO,RTDEP,NSTRES,SWFAC,SATFAC,PLTPOP,GM2KG
       REAL FRYLD,DEADLF, GRAINN
-      REAL, PARAMETER :: FRYLDTHRESH = 0.05 !Added by Khan
       REAL LFWT, GPP, PCNGRN, PCNRT
       REAL PCNST, PCNVEG, ROOTN
       REAL STOVN, STOVWT
@@ -80,8 +79,6 @@ C=======================================================================
 !     DAYL is embedded within WEATHER Variable Type
       DAYL    = WEATHER % DAYL
 
-! Thermal
-! Time
 
 C-----------------------------------------------------------------------
       DATA GROHEAD /

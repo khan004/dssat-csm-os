@@ -64,7 +64,7 @@ C=======================================================================
       REAL SDWT, SDWTAH, SDWTAM, SDWTPL, SEEDNO, STOVER, STOVWT
       REAL SWFAC, TOTNUP, TUBN, TUBNUP, TUBSM, TUBWT, TURFAC
       REAL WTNCAN, WTNFX, WTNSD, WTNUP, XLAI
-      REAL YIELD, FRYLD, WMAX, TUBDM     ! removed YLDFR, YIELDB
+      REAL YIELD, FRYLD, WMAX     !Khan: removed YLDFR, YIELDB
 
       REAL, DIMENSION(2) :: HARVFRAC
 
@@ -105,7 +105,7 @@ C=======================================================================
       IDETO = ISWITCH % IDETO
       IPLTI = ISWITCH % IPLTI
 
-      ACOUNT = 22  !Number of possible FILEA headers for this crop (EVALUATE.OUT)
+      ACOUNT = 22  !Number of possible FILEA headers for this crop 
       DATA OLAB /
      &    'TDAT  ',     ! 1 BEGIN TUBER GROWTH (dap)
      &    'TBID  ',     ! 2 Tuber initiation (dap) (added by Khan)
@@ -115,7 +115,7 @@ C=======================================================================
      &    'PWAM  ',     ! 6
      &    'H#AM  ',     ! 7
      &    'UYAH  ',     ! 8 TUBER FRESH YIELD (Mg/ha)
-     &    'WMAX  ',     ! 9 WMAX (added by Khan))
+     &    'WMAX  ',     ! 9 Tuber fresh weight at Physiological maturity (added by Khan)
      &    'TWAH  ',     !10 TUBER+TOP (kg/ha) HARVEST
 
 !        08/11/2005 Change BWAH to BWAM - byproduct produced to maturity
@@ -312,9 +312,8 @@ C-----------------------------------------------------------------------
 
       PBIOMS = BIOMAS * 10.0
 
-!     YLDFR  = (YIELD/1000.)/0.2  ! Tuber fresh yield, similar to FRYLD
-      TUBDM = 0.2 !Default value = 0.2
-      FRYLD  = (YIELD/1000.)/TUBDM  ! Modified by Khan for clarity
+!     YLDFR  = (YIELD/1000.)/0.2  ! Khan: Tuber fresh yield, similar to FRYLD, therefore replaced for clarity
+      FRYLD  = (YIELD/1000.)/0.2  
 !      HAULM  = BIOMAS*10. * PLANTS
       HAULM  = BIOMAS*10. * PLTPOP    !CHP
 
@@ -327,8 +326,7 @@ C-----------------------------------------------------------------------
 !      TUBNUP = TUBN*10.0 * PLANTS
       TUBNUP = TUBN*10.0 * PLTPOP     !CHP
 !      TOTNUP = TUBNUP    + APTNUP
-       TOTNUP = TUBNUP    + APTNUP  ! enabled by Khan
-!      APTNUP = TOPSN*10.0 * PLTPOP ! PT_phenol L.No. 110, by Khan
+       TOTNUP = TUBNUP    + APTNUP  ! enabled by Khan for generating correct value 
       TUBSM  = 0.0
       CTPP   = 0.0
 
@@ -371,12 +369,12 @@ C-----------------------------------------------------------------------
         OLAP(22) = 'EDAP  '
         CALL GetDesc(1,OLAP(22), DESCRIP(22))
 
-        DNR1 = TIMDIF (YRPLT,ISDATE) !ISDATE coming from PT_PHENOL L.No. 326
+        DNR1 = TIMDIF (YRPLT,ISDATE) 
         IF (DNR1 .LE. 0) THEN
           DNR1 = -99
         ENDIF
 
-        DNR2 = TIMDIF (YRPLT,TB)
+        DNR2 = TIMDIF (YRPLT,TB)    ! Khan: introduced Tuber initiation day from PT_MATURITY.for
         IF (DNR2 .LE. 0) THEN
           DNR2 = -99
         ENDIF
@@ -396,9 +394,8 @@ C-----------------------------------------------------------------------
           DNR0 = -99
         ENDIF
 
-        !YIELDB = (YIELD/1000.)/0.2                  ! Fresh yield, disabled by Khan as not used
-
-        FHDAP = '-99' ! Assuming "Not simulated"
+        !YIELDB = (YIELD/1000.)/0.2                  ! Khan: disabled as already present as FRYLD
+        FHDAP = '-99' ! Khan: Newly added variable "final harvest date" is not simulated, hence fixed to ***
        
         WRITE(Simulated(1),'(I8)') DNR1;  WRITE(Measured(1),'(I8)') DFLR
         WRITE(Simulated(2),'(I8)') DNR2;  WRITE(Measured(2),'(I8)') DFLR

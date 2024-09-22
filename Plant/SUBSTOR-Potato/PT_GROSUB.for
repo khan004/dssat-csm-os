@@ -80,8 +80,9 @@ C-----------------------------------------------------------------------
       REAL, DIMENSION(NL) :: DLAYR, DUL, KG2PPM, LL, 
      &    NH4, NO3, RLV, SAT, SW, UNO3, UNH4  
 
+      ! Khan: Moved LALWR to CUL file
 !      DATA  LALWR, SLAN /270.,0./
-!      DATA  LALWR /270./      !leaf area:leaf wt. ratio (cm2/g) MSKhan, moved to CUL file
+!      DATA  LALWR /270./      !leaf area:leaf wt. ratio (cm2/g) 
      
 !***********************************************************************
 !***********************************************************************
@@ -100,10 +101,8 @@ C-----------------------------------------------------------------------
         !For now, this ratio will be coded in (could use the ROWSPC
         !  variable in FILEX in the future). CHP
         BWRATIO = 0.5
-        !BWRATIO = 0.3 !MSKhan
       ELSE
         BWRATIO = 1.0
-        !BWRATIO = 0.5 !MSKhan
       ENDIF
 
       FIRST = .TRUE.
@@ -251,10 +250,10 @@ C-----------------------------------------------------------------------
           PRFT  = AMIN1 (PRFT,1.0)
 
       !ELSEIF (TEMPM .GT. 14 .AND. TEMPM .LE. 24) THEN
-      ELSEIF (TEMPM .GT. 14 .AND. TEMPM .LE. 25) THEN !MSKhan
+      ELSEIF (TEMPM .GT. 14 .AND. TEMPM .LE. 25) THEN !Khan: corrected as per Raymundo et al., 2018. European Journal of Agronomy, 100, 87-98
           PRFT = 1.0
       !ELSEIF (TEMPM .GT. 24 .AND. TEMPM .LE. 35) THEN
-      ELSEIF (TEMPM .GT. 25 .AND. TEMPM .LE. 35) THEN !MSKhan (Raymundo et al., 2018. European Journal of Agronomy, 100, 87-98)
+      ELSEIF (TEMPM .GT. 25 .AND. TEMPM .LE. 35) THEN !Khan: correcetd as per Raymundo et al., 2018. European Journal of Agronomy, 100, 87-98
 !         RR linear function from 24 to 40  y = -0.0909x + 3.1818      
           PRFT = -0.0909*(TEMPM) + 3.1818 
       ELSE
@@ -505,7 +504,7 @@ C        SLFN = 0.95 + 0.05*AGEFAC         ! ...Nitrogen stress
           !
 !          PTUBGR  = G3*ETGT/PLTPOP    !CHP
           !PTUBGR  = G3 * PCO2 * ETGT/PLTPOP         !JIL   (Modified)
-          PTUBGR  = G3 * PCO2 * STT/PLTPOP !  (By MSKhan; Raymundo et al. 2017. Field Crops Research. 202 57–76)
+          PTUBGR  = G3 * PCO2 * STT/PLTPOP ! Khan: correcetd as per Raymundo et al. 2017. Field Crops Research. 202 57–76
 	         
           
           IF (PLME .EQ. 'B') THEN                     !WM
