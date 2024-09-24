@@ -395,7 +395,7 @@ C-----------------------------------------------------------------------
         ENDIF
 
         !YIELDB = (YIELD/1000.)/0.2                  ! Khan: disabled as already present as FRYLD
-        FHDAP = '-99' ! Khan: Newly added variable "final harvest date" is not simulated, hence fixed to ***
+        !FHDAP = '-99' ! Khan: Newly added variable "final harvest date" is not simulated, hence fixed to ***
        
         WRITE(Simulated(1),'(I8)') DNR1;  WRITE(Measured(1),'(I8)') DFLR
         WRITE(Simulated(2),'(I8)') DNR2;  WRITE(Measured(2),'(I8)') DFLR
