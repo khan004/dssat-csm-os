@@ -126,17 +126,6 @@ C=======================================================================
      &      ISTAGE, L0, ST, TMAX, TMIN,                   !Input
      &      DTT, STT)                                     !Output
 
-         !Khan: Introduced cardinal temperatures required for estimating beta thermal time
-         ! These can be moved to ECO file
-         !TBD=5.5  !from Khan et al., 2019_Field_Crops_Res_242
-         !TOD=23.4 !from Khan et al., 2019_Field_Crops_Res_242   
-         !TCD=34.6 !from Khan et al., 2019_Field_Crops_Res_242
-         !TSEN=1.6 !from Khan et al., 2019_Field_Crops_Res_242  
-         !SBD=2.0  !Estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-171
-         !SOD=24.0 !Estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-171    
-         !SCD=36.0 !Estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-171
-         !SSEN=0.7 !Estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-171 
-
        CALL PT_BTHTIME (
      &     ISTAGE, L0, ST, TMAX, TMIN, TBD, TOD, TCD,  !Input
      &     TSEN, SBD, SOD, SCD, SSEN,                  !Input
