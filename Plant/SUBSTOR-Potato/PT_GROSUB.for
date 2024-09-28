@@ -54,6 +54,7 @@ C-----------------------------------------------------------------------
 
       REAL AGEFAC, ARVCHO, BIOMAS, CANNAA, CANWAA
       REAL BWRATIO, RUE1, RUE2
+      REAL TBD, TOD, TCD, TSEN, SBD, SOD, SCD, SSEN
       REAL CARBO, CNSD1, CNSD2, CO2
       REAL CUMDTT, DEVEFF, DDEADLF, DEADLF, DEADLN, DTT, ETGT
       REAL G2, G3, GRAINN, GRF, GROLF, GROPLNT, GRORT
@@ -93,7 +94,8 @@ C-----------------------------------------------------------------------
       CALL PT_IPGRO(
      &    FILEIO,                                         !Input
      &    CO2X, CO2Y, G2, G3, PD, PLME, PLTPOP,           !Output
-     &    SDWTPL, RUE1, RUE2, SENSF, SENST, LALWR)        !Output
+     &    SDWTPL, RUE1, RUE2, SENSF, SENST, LALWR,        !Output
+     &    TBD, TOD, TCD, TSEN, SBD, SOD, SCD, SSEN)       !Output
 
       IF (PLME .EQ. 'B') THEN 
       !IF (PLME .EQ. 'S') THEN ! MSKhan
@@ -700,7 +702,8 @@ C=======================================================================
       SUBROUTINE PT_IPGRO(
      &    FILEIO,                                         !Input
      &    CO2X, CO2Y, G2, G3, PD, PLME, PLTPOP,           !Output
-     &    SDWTPL, RUE1, RUE2, SENSF, SENST, LALWR)   !Output
+     &    SDWTPL, RUE1, RUE2, SENSF, SENST, LALWR,        !Output
+     &    TBD, TOD, TCD, TSEN, SBD, SOD, SCD, SSEN)       !Output
 
 !     ------------------------------------------------------------------
       USE ModuleDefs     !Definitions of constructed variable types, 
@@ -715,7 +718,7 @@ C=======================================================================
       CHARACTER*6, PARAMETER :: ERRKEY = 'GROSUB'
 
       CHARACTER*2   CROP
-      CHARACTER*5   ACRO(4)  
+      CHARACTER*5   ACRO(12)  
       CHARACTER*6   SECTION, ECONO, ECOTYP
       CHARACTER*12  FILEC, FILEE
       CHARACTER*16  ECONAM
@@ -728,7 +731,7 @@ C=======================================================================
       INTEGER ERR, FOUND, I, J, LINC, LNUM, PATHL, ISECT
 
       REAL G2, G3, PD, PLTPOP, SDWTPL, RUE1, RUE2
-      REAL LALWR
+      REAL LALWR, TBD, TOD, TCD, TSEN, SBD, SOD, SCD, SSEN
       REAL, DIMENSION(4) :: SENST, SENSF
       REAL CO2X(10), CO2Y(10)
       
@@ -801,6 +804,14 @@ C     Read Crop Parameters from FILEC
       ACRO(2) = 'CO2Y'
       ACRO(3) = 'SENST'
       ACRO(4) = 'SENSF'
+      ACRO(5) = 'TBD'
+      ACRO(6) = 'TOD'
+      ACRO(7) = 'TCD'
+      ACRO(8) = 'TSEN'
+      ACRO(9) = 'SBD'
+      ACRO(10) = 'SOD'
+      ACRO(11) = 'SCD'
+      ACRO(12) = 'SSEN'        
       LNUM = 0
 
       DO WHILE (ERR == 0)
@@ -808,7 +819,7 @@ C     Read Crop Parameters from FILEC
         CALL IGNORE(LUNCRP,LNUM,ISECT,CHAR)
         IF (ISECT == 0) EXIT
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILEC,LNUM)
-        DO J = 1, 4
+        DO J = 1, 12
           IF (INDEX(CHAR(1:15),ACRO(J)) > 0) THEN
             SELECT CASE (J)
               CASE (1)
@@ -819,6 +830,22 @@ C     Read Crop Parameters from FILEC
                 READ (CHAR(16:39),'(10F6.0)',IOSTAT=ERR)(SENST(I),I=1,4)
               CASE (4)
                 READ (CHAR(16:39),'(10F6.0)',IOSTAT=ERR)(SENSF(I),I=1,4)
+              CASE (5)
+                READ (CHAR(16:66), '(F6.1)', IOSTAT=ERR) TBD
+              CASE (6)
+                READ (CHAR(16:66), '(F6.1)', IOSTAT=ERR) TOD
+              CASE (7)
+                READ (CHAR(16:66), '(F6.1)', IOSTAT=ERR) TCD
+              CASE (8)
+                READ (CHAR(16:66), '(F6.1)', IOSTAT=ERR) TSEN
+              CASE (9)
+                READ (CHAR(16:66), '(F6.1)', IOSTAT=ERR) SBD
+              CASE (10)
+                READ (CHAR(16:66), '(F6.1)', IOSTAT=ERR) SOD
+              CASE (11)
+                READ (CHAR(16:66), '(F6.1)', IOSTAT=ERR) SCD
+              CASE (12)
+                READ (CHAR(16:66), '(F6.1)', IOSTAT=ERR) SSEN 
             END SELECT
             IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILEC,LNUM)
           ENDIF

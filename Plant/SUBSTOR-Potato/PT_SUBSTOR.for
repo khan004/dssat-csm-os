@@ -57,6 +57,7 @@ C=======================================================================
       REAL STOVWT, STT, SWFAC, TMAX, TMIN, TOPSN 
       REAL TOPWT, TOTNUP, TRNU, TUBN, TUBWT, TURFAC, TWILEN
       REAL WTNCAN, WTNLO, XLAI, XSTAGE
+      REAL TBD, TOD, TCD, TSEN, SBD, SOD, SCD, SSEN 
       REAL SDWT, SEEDNO, TRWUP, WTNSD, WTNUP, YIELD, WMAX, WB
 
       REAL SATFAC !SATFAC imported only for PT_OPGROW
@@ -162,6 +163,7 @@ C=======================================================================
      &    WEATHER, DLAYR, FILEIO, GRAINN, ISWWAT, LL, MDATE, NLAYR,!Input
      &    NSTRES, PLTPOP, RTWT, ST, SW, SWFAC, TMAX, TMIN,!Input
      &    TOPSN, TWILEN, XLAI, YRDOY, YRPLT, YRSIM,       !Input
+     &    TBD, TOD, TCD, TSEN, SBD, SOD, SCD, SSEN,       !Input
      &    APTNUP, CUMDTT, DTT, GNUP, GRORT, ISDATE,       !Output 
      &    ISTAGE, MAXLAI, PLANTS, RTF, SEEDRV,            !Output
      &    STGDOY, STT, TOTNUP, XSTAGE, YREMRG, CUMSTT,    !Output 
@@ -236,6 +238,7 @@ C=======================================================================
      &    WEATHER, DLAYR, FILEIO, GRAINN, ISWWAT, LL, MDATE, !Input
      &    NLAYR, NSTRES, PLTPOP, RTWT, ST, SW, SWFAC, TMAX, TMIN,!Input
      &    TOPSN, TWILEN, XLAI, YRDOY, YRPLT, YRSIM,       !Input
+     &    TBD, TOD, TCD, TSEN, SBD, SOD, SCD, SSEN,       !Input
      &    APTNUP, CUMDTT, DTT, GNUP, GRORT, ISDATE,       !Output
      &    ISTAGE, MAXLAI, PLANTS, RTF, SEEDRV,            !Output
      &    STGDOY, STT, TOTNUP, XSTAGE, YREMRG, CUMSTT,    !Output

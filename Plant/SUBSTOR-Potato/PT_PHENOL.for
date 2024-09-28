@@ -15,6 +15,7 @@ C=======================================================================
      &    WEATHER, DLAYR, FILEIO, GRAINN, ISWWAT, LL, MDATE, !Input
      &    NLAYR, NSTRES, PLTPOP, RTWT, ST, SW, SWFAC, TMAX,  !Input
      &    TMIN, TOPSN, TWILEN, XLAI, YRDOY, YRPLT, YRSIM,    !Input
+     &    TBD, TOD, TCD, TSEN, SBD, SOD, SCD, SSEN,          !Input, Added by Khan
      &    APTNUP, CUMDTT, DTT, GNUP, GRORT, ISDATE,          !Output
      &    ISTAGE, MAXLAI, PLANTS, RTF, SEEDRV,               !Output
      &    STGDOY, STT, TOTNUP, XSTAGE, YREMRG, CUMSTT,       !Output 
@@ -25,12 +26,13 @@ C=======================================================================
                          ! which contain control information, soil
                          ! parameters, hourly weather data.
       IMPLICIT  NONE
-      EXTERNAL PT_IPPHEN, YR_DOY, PT_THTIME, PT_PHASEI, PT_BTHTIME    
+      EXTERNAL PT_IPPHEN, YR_DOY, PT_THTIME, PT_PHASEI, PT_BTHTIME
+     &  PT_IPGRO 
       SAVE
 
       LOGICAL   COND, EMERGE
 
-      CHARACTER*1  ISWWAT
+      CHARACTER*1  ISWWAT, PLME
       CHARACTER*2  CROP
       CHARACTER*30 FILEIO
 
@@ -48,8 +50,12 @@ C=======================================================================
       REAL TC, TCPLUS, TEMP, TII, TMAX, TMIN, TOPSN, TOTNUP, TSPRWT
       REAL XDEPTH, XDTT, XPLANT, XSTAGE
       REAL TBD, TOD, TCD, TSEN, TDU, SDU, SBD, SOD, SCD  
-      REAL SSEN, DTT !
+      REAL SSEN, DTT 
+      REAL G2, G3, PD, RUE1, RUE2, LALWR, SDWTPL ! Added by Khan
 
+      REAL, DIMENSION(4)  :: SENST, SENSF ! Added by Khan
+      REAL, DIMENSION(10) :: CO2X, CO2Y   ! Added by Khan
+      
       REAL, DIMENSION(NL) :: DLAYR, LL, ST, SW
       Type (WeatherType) WEATHER
       REAL DAYL
@@ -65,6 +71,12 @@ C=======================================================================
       CALL PT_IPPHEN(
      &    FILEIO, 
      &    CROP, IEMRG, P2, PLANTS, SDEPTH, SPRLAP, TC, TCPLUS)
+      
+      CALL PT_IPGRO(
+     &    FILEIO,                                         !Input
+     &    CO2X, CO2Y, G2, G3, PD, PLME, PLTPOP,           !Output
+     &    SDWTPL, RUE1, RUE2, SENSF, SENST, LALWR,        !Output
+     &    TBD, TOD, TCD, TSEN, SBD, SOD, SCD, SSEN)       !Output 
 
       ISTAGE = 5
       XSTAGE = 0.0
@@ -116,18 +128,18 @@ C=======================================================================
 
          !Khan: Introduced cardinal temperatures required for estimating beta thermal time
          ! These can be moved to ECO file
-         TBD=5.5  !from Khan et al., 2019_Field_Crops_Res_242
-         TOD=23.4 !from Khan et al., 2019_Field_Crops_Res_242   
-         TCD=34.6 !from Khan et al., 2019_Field_Crops_Res_242
-         TSEN=1.6 !from Khan et al., 2019_Field_Crops_Res_242  
-         SBD=2.0  !Estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-171
-         SOD=24.0 !Estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-171    
-         SCD=36.0 !Estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-171
-         SSEN=0.7 !Estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-171 
+         !TBD=5.5  !from Khan et al., 2019_Field_Crops_Res_242
+         !TOD=23.4 !from Khan et al., 2019_Field_Crops_Res_242   
+         !TCD=34.6 !from Khan et al., 2019_Field_Crops_Res_242
+         !TSEN=1.6 !from Khan et al., 2019_Field_Crops_Res_242  
+         !SBD=2.0  !Estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-171
+         !SOD=24.0 !Estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-171    
+         !SCD=36.0 !Estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-171
+         !SSEN=0.7 !Estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-171 
 
        CALL PT_BTHTIME (
      &     ISTAGE, L0, ST, TMAX, TMIN, TBD, TOD, TCD,  !Input
-     &     TSEN, SBD, SOD, SCD, SSEN,    
+     &     TSEN, SBD, SOD, SCD, SSEN,                  !Input
      &     TDU, SDU)                                   !Output
 
 !        Khan: replace DTT & STT with the one calculated by PT_BTHTIME
