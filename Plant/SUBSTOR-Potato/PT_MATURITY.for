@@ -92,7 +92,7 @@ C-----------------------------------------------------------------------
           IF (WDIFFRATE .LE. THRESH) THEN
             FOUND_WMAX = .TRUE.
             MDATE = YRDOY ! MDATE means time of physiolgical maturity
-            WMAX = W      ! WMAX means tuber fresh weight at physiological maturity
+            WMAX = FRYLD  ! WMAX means tuber fresh weight at physiological maturity
           ENDIF
         END IF
         WPREV = W
