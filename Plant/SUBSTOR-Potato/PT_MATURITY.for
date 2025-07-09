@@ -71,8 +71,8 @@ C-----------------------------------------------------------------------
 
       WB = ((CM/RM)*log(2.0)) * 0.01         ! Tuber weight at TB
 
-      ! W = FRYLD
-      W = DRYLD   ! based on dry yield
+      W = FRYLD
+      !W = DRYLD   ! based on dry yield
       TDIFF = STT ! REF to PT_GROSUB L.No 515; 628)
 
       ! Find first point (Tb) where W greater than or equal to Wb
