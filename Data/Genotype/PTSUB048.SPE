@@ -31,12 +31,23 @@ PT OPT   SENSF     1.    1.   0.7    0.0     !Factor of leaf senescense rate ...
   0.50  1.00       SSKC, SKCBmax ASCE short ref (12 cm grass)
   0.50  0.77       TSKC, TKCBmax ASCE tall ref (50 cm alfalfa)
 
-PT OPT   TBD   5.5                    ! Base air temperature from Khan et al., 2019_Field_Crops_Res_242
-PT OPT   TOD   23.4                   ! Optimum air temperature from Khan et al., 2019_Field_Crops_Res_242
-PT OPT   TCD   34.6                   ! Ceiling air temperature from Khan et al., 2019_Field_Crops_Res_242
-PT OPT   TSEN  1.6                    ! Curvature for air temperature response  from Khan et al., 2019_Field_Crops_Res_242
-PT OPT   SBD   2.0                    ! Base soil temperature estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-17
-PT OPT   SOD   24.0                   ! Optimum soil temperature estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-17
-PT OPT   SCD   36.0                   ! Ceiling soil temperature estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-17
-PT OPT   SSEN  0.7                    ! Curvature for soil temperature response estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-17
+!PT OPT   TBD   5.5                    ! Base air temperature from Khan et al., 2019_Field_Crops_Res_242
+!PT OPT   TOD   23.4                   ! Optimum air temperature from Khan et al., 2019_Field_Crops_Res_242
+!PT OPT   TCD   34.6                   ! Ceiling air temperature from Khan et al., 2019_Field_Crops_Res_242
+!PT OPT  TSEN  1.6                    ! Curvature for air temperature response from Khan et al., 2019_Field_Crops_Res_242
+!PT OPT   SBD   2.0                    ! Base soil temperature estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-17
+!PT OPT   SOD   24.0                   ! Optimum soil temperature estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-17
+!PT OPT   SCD   36.0                   ! Ceiling soil temperature estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-17
+!PT OPT  SSEN  0.7                    ! Curvature for soil temperature response estimated from Epstein, 1966, Agronomy Journal 58, no. 2: 169-17
+
+PT OPT   TBD   2.0                    ! Base air temperature from Griffin et al., 1993 (SUBSTOR-Potato version 2.0)
+PT OPT   TOD   24.0                   ! Optimum air temperature from Griffin et al., 1993 (SUBSTOR-Potato version 2.0)
+PT OPT   TCD   35.0                   ! Ceiling air temperature from Griffin et al., 1993 (SUBSTOR-Potato version 2.0)
+PT OPT   TSEN  0.2                    ! Curvature for air temperature response, Assumed
+!PT OPT   TSEN  1.0                    ! Curvature for air temperature response, Assumed
+PT OPT   SBD   2.0                    ! Base soil temperature estimated from Griffin et al., 1993 (SUBSTOR-Potato version 2.0)
+PT OPT   SOD   23.0                   ! Optimum soil temperature estimated from Griffin et al., 1993 (SUBSTOR-Potato version 2.0)
+PT OPT   SCD   33.0                   ! Ceiling soil temperature estimated from Griffin et al., 1993 (SUBSTOR-Potato version 2.0)
+PT OPT   SSEN  0.3                    ! Curvature for soil temperature, Assumed
+!PT OPT   SSEN  1.0                    ! Curvature for soil temperature, Assumed
 
