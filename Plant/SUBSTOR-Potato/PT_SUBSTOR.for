@@ -54,7 +54,7 @@ C=======================================================================
       REAL PLANTS, PLTPOP, PODWT, ROOTN, RTDEP, RTF
       REAL RTWT, SDWTAH, SDWTPL, SEEDNI, SEEDRV, SRAD, STMWT, STOVN
       REAL SLPF
-      REAL STOVWT, STT, SWFAC, TMAX, TMIN, TOPSN 
+      REAL STOVWT, STT, SWFAC, TMAX, TMIN, TOPSN, TRLV 
       REAL TOPWT, TOTNUP, TRNU, TUBN, TUBWT, TURFAC, TWILEN
       REAL WTNCAN, WTNLO, XLAI, XSTAGE
       REAL TBD, TOD, TCD, TSEN, SBD, SOD, SCD, SSEN 
@@ -154,10 +154,10 @@ C=======================================================================
       PConc_Shel = 0.0
       PConc_Seed = 0.0
 
-      CALL PT_ROOTGR (SEASINIT,
+      CALL PT_ROOTGR (SEASINIT,YRDOY,
      &    DLAYR, DS, DTT, DUL, FILEIO, GRORT, ISWNIT,     !Input
      &    LL, NH4, NLAYR, NO3, PLTPOP, SHF, SW, SWFAC,    !Input
-     &    CUMDEP, RLV, RTDEP)                             !Output
+     &    CUMDEP, RLV, RTDEP, TRLV)                             !Output
 
       CALL PT_PHENOL (
      &    WEATHER, DLAYR, FILEIO, GRAINN, ISWWAT, LL, MDATE, NLAYR,!Input
@@ -226,10 +226,10 @@ C=======================================================================
 
 !       WRESR growth and depth routine
         IF (GRORT .GT. 0.0) THEN
-          CALL PT_ROOTGR (RATE, 
+        CALL PT_ROOTGR (RATE, YRDOY,
      &    DLAYR, DS, DTT, DUL, FILEIO, GRORT, ISWNIT,     !Input
      &    LL, NH4, NLAYR, NO3, PLTPOP, SHF, SW, SWFAC,    !Input
-     &    CUMDEP, RLV, RTDEP)                             !Output
+     &    CUMDEP, RLV, RTDEP, TRLV)                       !Output
         ENDIF
       ENDIF
 
