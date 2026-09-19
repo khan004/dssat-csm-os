@@ -240,7 +240,7 @@ C-----------------------------------------------------------------------
              END IF
           END IF
 
-          IF (COND .AND. CUMSTT .GE. 7.35) THEN
+          IF (COND .AND. CUMSTT .GE. 7.35) THEN !Germination occurs when CUMSTT reaches 7.35
              STGDOY(ISTAGE) = YRDOY
              CALL PT_PHASEI (
      &         ISTAGE, CUMDTT, XPLANT, SPRLAP,            !I/O

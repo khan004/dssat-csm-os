@@ -43,7 +43,7 @@ C-----------------------------------------------------------------------
           ISTAGE  = 6
           CUMDTT  = 0.0
           CUMSTT  = 0.0
-          IF (SPRLAP .GT. 0.0) THEN
+          IF (SPRLAP .GT. 0.0) THEN   ! If the planting material already has sprout development represented by SPRLAP > 0, the model starts directly in ISTAGE 7.
              ISTAGE = 7
           END IF
 
