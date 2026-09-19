@@ -1,5 +1,4 @@
 *POTATO CULTIVAR COEFFICIENTS: PTSUB048 MODEL
-
 ! COEFF       DEFINITIONS
 ! ========    ===========
 ! VAR#        Identification code or number for a specific cultivar
@@ -16,31 +15,40 @@
 !
 !             P/G/N:Phenology/Growth/Not used for calbration
 !
-@VAR#  VAR-NAME........ EXPNO   ECO#    G2    G3    PD    P2    TC
-!Coeffient #                             1     2     3     4     5
-!Calibration                             G     G     G     P     P
+@VAR#  VAR-NAME........ EXPNO   ECO#    G2    G3    PD    P2    TC    LALWR
+!Coeffient #                             1     2     3     4     5     6
+!Calibration                             G     G     G     N     P     G
 
-999991 MINIMA               . DFAULT  900.  21.0   0.5   0.3  15.0
-999992 MAXIMA               . DFAULT 2100.  26.0   1.0   0.9  22.0
+999991 MINIMA               . DFAULT  900.  21.0   0.5   0.2  15.0  93.0
+999992 MAXIMA               . DFAULT 2100.  26.0   1.0   0.9  22.0 621.0
 
-IB0001 MAJESTIC             . IB0001 2000.  22.5   0.8   0.6  17.0   
-IB0002 SEBAGO               . IB0001 1100.  22.5   0.9   0.0  19.0   
-IB0003 Russet Burbank       . IB0001 1100.  26.0   0.9   0.2  17.0 
-IB0004 KATHADIN             . IB0001 2000.  25.0   0.5   0.7  20.0   
-IB0005 ATLANTIC             . IB0001 1000.  25.0   0.4   0.1  21.0
-CI0001 CLON7316             . IB0001 1100.  25.0   0.2   0.8  21.0
-CI0002 CLON7716             . IB0001 1100.  25.0   0.3   0.8  21.0
-AR0003 ACHIRANA             . IB0001 1100.  21.0   0.5   0.2  21.0 
-DM0004 KAPTAH               . IB0001 1500.  26.0   0.5   0.2  22.0 
-IB0006 MARIS PIPER          . IB0001 2000.  25.0   0.8   0.4  17.0   
-IB0007 KING EDWARD          . IB0001 2000.  22.5   1.0   0.6  17.0   
-IB0008 DESIREE              . IB0001 2000.  25.0   0.9   0.6  16.0   
-IB0009 LT-1                 . IB0001 2000.  25.0   0.9   0.8  17.0   
-IB0010 C14-343              . IB0001 2000.  25.0   0.9   0.4  21.0   
-IB0011 NORCHIP              . IB0001 2000.  25.0   1.0   0.4  17.0   
-IB0012 SHEPODY              . IB0001 2000.  25.0   0.7   0.6  19.0  
-IB0018 Hilite Russet        . IB0001 1000.  27.0   0.2   0.1  20.0   
-UF0001 RED LASODA           . IB0001 2000.  22.0   0.7   0.4  19.0   
-
-  
+IB0001 MAJESTIC             . IB0001 2000.  22.5   0.8   0.6  17.0 270.0
+IB0002 SEBAGO               . IB0001 1100.  22.5   0.9   0.0  19.0 270.0
+IB0003 Russet Burbank       . IB0001 1100.  26.0   0.9   0.2  17.0 270.0
+IB0004 KATHADIN             . IB0001 2000.  25.0   0.5   0.7  20.0 270.0
+IB0005 ATLANTIC             . IB0001 1000.  25.0   0.4   0.1  21.0 270.0
+CI0001 CLON7316             . IB0001 1100.  25.0   0.2   0.8  21.0 270.0
+CI0002 CLON7716             . IB0001 1100.  25.0   0.3   0.8  21.0 270.0
+AR0003 ACHIRANA             . IB0001 1100.  21.0   0.5   0.2  21.0 270.0
+DM0004 KAPTAH               . IB0001 1500.  26.0   0.5   0.2  22.0 270.0
+IB0006 MARIS PIPER          . IB0001 2000.  25.0   0.8   0.4  17.0 270.0
+IB0007 KING EDWARD          . IB0001 2000.  22.5   1.0   0.6  17.0 270.0
+IB0008 DESIREE              . IB0001 2000.  25.0   0.9   0.6  16.0 270.0
+IB0009 LT-1                 . IB0001 2000.  25.0   0.9   0.8  17.0 270.0
+IB0010 C14-343              . IB0001 2000.  25.0   0.9   0.4  21.0 270.0
+IB0011 NORCHIP              . IB0001 2000.  25.0   1.0   0.4  17.0 270.0
+IB0012 SHEPODY              . IB0001 2000.  25.0   0.7   0.6  19.0 270.0
+IB0018 Hilite Russet        . IB0001 1000.  27.0   0.2   0.1  20.0 270.0
+UF0001 RED LASODA           . IB0001 2000.  22.0   0.7   0.4  19.0 270.0
+GU0001 ELodie               . IB0001 994.2 25.98 0.997 0.200 15.34 270.0
+GU0002 El Beida             . IB0001 905.9 25.11 0.954 0.200 15.02 270.0
+GU0003 Constance            . IB0001 900.0 27.00 0.529 0.200 15.00 270.0
+GU0004 Red Sun              . IB0001 903.1 27.00 0.800 0.200 15.00 270.0
+GU0005 Red Valentine        . IB0001 1173. 25.52 0.953 0.200 18.00 270.0
+GU0006 Arizona              . IB0001 917.4 21.63 0.524 0.200 15.50 270.0
+GU0007 Arsenal              . IB0001 901.5 25.87 0.966 0.200 21.73 270.0
+GU0008 Rock                 . IB0001 969.7 25.96 0.992 0.200 16.5  270.0
+GU0009 Fado                 . IB0001 905.8 25.98 0.965 0.200 15.50 270.0
+GU0010 Sarpo Mira           . IB0001 902.7 25.98 0.992 0.200 16.00 270.0
+GU0011 Check                . IB0001 2073.0 21.03 0.544 0.200 18.00 270.0
 

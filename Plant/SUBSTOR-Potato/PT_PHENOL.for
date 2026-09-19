@@ -12,20 +12,21 @@ C  06/11/2002 GH  Modified for Y2K
 C=======================================================================
 
       SUBROUTINE PT_PHENOL (
-     &    DLAYR, FILEIO, GRAINN, ISWWAT, LL, MDATE, NLAYR,!Input
-     &    NSTRES, PLTPOP, RTWT, ST, SW, SWFAC, TMAX, TMIN,!Input
-     &    TOPSN, TWILEN, XLAI, YRDOY, YRPLT, YRSIM,       !Input
-     &    APTNUP, CUMDTT, DTT, GNUP, GRORT, ISDATE,       !Output
-     &    ISTAGE, MAXLAI, PLANTS, RTF, SEEDRV,            !Output
-     &    STGDOY, STT, TOTNUP, XSTAGE, YREMRG,            !Output
+     &    DLAYR, FILEIO, GRAINN, ISWWAT, LL, MDATE, !Input
+     &    NLAYR, NSTRES, PLTPOP, RTWT, ST, SW, SWFAC, TMAX,  !Input
+     &    TMIN, TOPSN, TWILEN, XLAI, YRDOY, YRPLT, YRSIM,    !Input
+     &    TBD, TOD, TCD, TSEN, SBD, SOD, SCD, SSEN,          !Input, Added by Khan for PT_BTHTIME
+     &    APTNUP, CUMDTT, DTT, GNUP, GRORT, ISDATE,          !Output
+     &    ISTAGE, MAXLAI, PLANTS, RTF, SEEDRV,               !Output
+     &    STGDOY, STT, TOTNUP, XSTAGE, YREMRG, CUMSTT,       !Output
      &    DYNAMIC)
 
 !-----------------------------------------------------------------------
-      USE ModuleDefs     !Definitions of constructed variable types, 
+      USE ModuleDefs     !Definitions of constructed variable types,
                          ! which contain control information, soil
                          ! parameters, hourly weather data.
       IMPLICIT  NONE
-      EXTERNAL PT_IPPHEN, YR_DOY, PT_THTIME, PT_PHASEI
+      EXTERNAL PT_IPPHEN, YR_DOY, PT_THTIME, PT_PHASEI, PT_BTHTIME
       SAVE
 
       LOGICAL   COND, EMERGE
@@ -39,13 +40,17 @@ C=======================================================================
       INTEGER YREMRG
       INTEGER STGDOY(20)
 
-      REAL APTNUP, CTII, CUMDTT, CUMSTT, DTT
+      REAL APTNUP, CTII, CUMDTT, CUMSTT, DTT, STT
+      REAL DTT_DEFAULT, STT_DEFAULT ! For PT_THTIME output
       REAL GNUP, GRAINN, GRF, GRORT, GROSPR, XLAI, MAXLAI
       REAL NSTRES, P2, TWILEN, PLANTS, PLTPOP
-      REAL RDLF, RTF, RTWT, SDEPTH, STT, SWFAC, SEEDAV
+      REAL RDLF, RTF, RTWT, SDEPTH, SWFAC, SEEDAV
       REAL SEEDRV, SENLA, SPGROF, SPRLAP, SPRLTH, SPRWT, SWSD
       REAL TC, TCPLUS, TEMP, TII, TMAX, TMIN, TOPSN, TOTNUP, TSPRWT
       REAL XDEPTH, XDTT, XPLANT, XSTAGE
+      REAL TBD, TOD, TCD, TSEN, TDU, SDU, SBD, SOD, SCD, SSEN   ! Added by Khan for PT_BTHTIME call
+      LOGICAL, PARAMETER :: USE_BETA_AIR  = .TRUE.
+      LOGICAL, PARAMETER :: USE_BETA_SOIL = .TRUE.
 
       REAL, DIMENSION(NL) :: DLAYR, LL, ST, SW
 
@@ -56,7 +61,7 @@ C=======================================================================
       IF (DYNAMIC .EQ. SEASINIT) THEN
 !-----------------------------------------------------------------------
       CALL PT_IPPHEN(
-     &    FILEIO, 
+     &    FILEIO,
      &    CROP, IEMRG, P2, PLANTS, SDEPTH, SPRLAP, TC, TCPLUS)
 
       ISTAGE = 5
@@ -79,11 +84,14 @@ C=======================================================================
       CUMDTT = 0.0
       CUMSTT = 0.0
       DTT    = 0.0
+      STT    = 0.0  !Added by Khan for PT_THTIME
       GNUP   = 0.0
       MAXLAI = 0.0
       RTF    = 0.0
       SENLA  = 0.0
       TOTNUP = 0.0
+      TDU    = 0.0 !Added by Khan for PT_BTHTIME
+      SDU    = 0.0 !Added by Khan for PT_BTHTIME
       ISDATE = 0
 
 !***********************************************************************
@@ -99,11 +107,52 @@ C=======================================================================
       TOTNUP = APTNUP
 
       IF (ISTAGE .NE. 5) THEN
-         CALL PT_THTIME (  
-     &      ISTAGE, L0, ST, TMAX, TMIN,                   !Input
-     &      DTT, STT)                                     !Output
 
-         CUMDTT = CUMDTT + DTT            ! Update thermal time
+!-----------------------------------------------------------------------
+!        Thermal time calculation
+!
+!        Calculate both the original DSSAT thermal time and the
+!        Beta thermal time. The active formulation is selected
+!        explicitly below.
+!-----------------------------------------------------------------------
+
+         CALL PT_THTIME (
+     &      ISTAGE, L0, ST, TMAX, TMIN,                   !Input
+     &      DTT_DEFAULT, STT_DEFAULT)                    !Output
+
+!-----------------------------------------------------------------------
+!        Beta thermal time calculation
+!-----------------------------------------------------------------------
+
+         CALL PT_BTHTIME (
+     &      ISTAGE, L0, ST, TMAX, TMIN, TBD, TOD, TCD,  !Input
+     &      TSEN, SBD, SOD, SCD, SSEN,                  !Input
+     &      TDU, SDU)                                   !Output
+
+!-----------------------------------------------------------------------
+!        Select thermal-time calculation method
+!
+!        Start with the original DSSAT formulation.
+!        Replace air and/or soil thermal time with the Beta
+!        formulation only when the corresponding switch is TRUE.
+!-----------------------------------------------------------------------
+
+         DTT = DTT_DEFAULT
+         STT = STT_DEFAULT
+
+         IF (USE_BETA_AIR) THEN
+            DTT = TDU
+         END IF
+
+         IF (USE_BETA_SOIL) THEN
+            STT = SDU
+         END IF
+
+!-----------------------------------------------------------------------
+!        Accumulate the selected thermal time
+!-----------------------------------------------------------------------
+
+         CUMDTT = CUMDTT + DTT
          CUMSTT = CUMSTT + STT
       END IF
 
@@ -115,15 +164,15 @@ C=======================================================================
               RTF = 1. - (1./36.)*(10.0-TEMP)**2
               RTF = AMAX1 (RTF,0.0)
            ELSEIF (TEMP .GT. 10.0 .AND. TEMP .LE. TC) THEN
-              RTF = 1.0                           
+              RTF = 1.0
 
 !          Externalize TCPlus variable (was hardwired to 8.0)
            ELSEIF (TEMP .GT. TC .AND. TEMP .LE. TC+8.0) THEN
 !           ELSEIF (TEMP .GT. TC .AND. TEMP .LE. TC+TCPLUS) THEN
 !             Use linear function between TC and TCPLUS
-              RTF = 1.0 - (1./64.)*(TEMP-TC)**2 
+              RTF = 1.0 - (1./64.)*(TEMP-TC)**2
 !             original QUADRATIC FUNCTION
-!             RTF = 1.0 - (TEMP - TC)/TCPLUS    !linear function 
+!             RTF = 1.0 - (TEMP - TC)/TCPLUS    !linear function
               RTF = AMAX1 (RTF,0.0)
            ELSE
               RTF = 0.0
@@ -136,9 +185,9 @@ C-----------------------------------------------------------------------
         ! ISTAGE 5: pre-planting
         ! ISTAGE 6: planting to germination
         ! ISTAGE 7: germination to emergence
-        ! ISTAGE 1: vegetative to initiation
-        ! ISTAGE 2: initiation to maturity
-        !
+        ! ISTAGE 1: vegetative to tuber initiation ! Clarified by Khan
+        ! ISTAGE 2: tuber initiation to maturity   ! Clarified by Khan
+        ! ISTAGE 3: tuber harvest                  ! Added by Khan
 C-----------------------------------------------------------------------
         CASE (5)
           !
@@ -177,7 +226,7 @@ C-----------------------------------------------------------------------
              !
              ISTAGE = 2
              STGDOY(ISTAGE) = YRDOY
-             CALL PT_PHASEI ( 
+             CALL PT_PHASEI (
      &         ISTAGE, CUMDTT, XPLANT, SPRLAP,            !I/O
      &         CTII, CUMSTT, MAXLAI, SENLA, TSPRWT, XDTT) !Output
           END IF
@@ -193,7 +242,7 @@ C-----------------------------------------------------------------------
 
           IF (COND .AND. CUMSTT .GE. 7.35) THEN
              STGDOY(ISTAGE) = YRDOY
-             CALL PT_PHASEI ( 
+             CALL PT_PHASEI (
      &         ISTAGE, CUMDTT, XPLANT, SPRLAP,            !I/O
      &         CTII, CUMSTT, MAXLAI, SENLA, TSPRWT, XDTT) !Output
           END IF
@@ -247,7 +296,7 @@ C-----------------------------------------------------------------------
              YREMRG = YRDOY       !CHP 12/4/01
              XSTAGE = 1.0
              DTT    = STT
-             CALL PT_PHASEI ( 
+             CALL PT_PHASEI (
      &         ISTAGE, CUMDTT, XPLANT, SPRLAP,            !I/O
      &         CTII, CUMSTT, MAXLAI, SENLA, TSPRWT, XDTT) !Output
           END IF
@@ -273,7 +322,7 @@ C-----------------------------------------------------------------------
              RDLF = AMAX1 (RDLF,0.0)
           END IF
           !
-          ! TII=tuber induction index modified by RTF, RDLF, & 
+          ! TII=tuber induction index modified by RTF, RDLF, &
           !   deficit factors
           !
           TII    = RDLF*RTF + 0.5*(1.0-AMIN1(SWFAC, NSTRES))
@@ -283,7 +332,7 @@ C-----------------------------------------------------------------------
           IF (CTII .GE. 20.0) THEN         ! Initiation at CTII=20
              STGDOY(ISTAGE) = YRDOY
              ISDATE         = YRDOY
-             CALL PT_PHASEI ( 
+             CALL PT_PHASEI (
      &         ISTAGE, CUMDTT, XPLANT, SPRLAP,            !I/O
      &         CTII, CUMSTT, MAXLAI, SENLA, TSPRWT, XDTT) !Output
              IF (ISWWAT .NE. 'N') THEN
@@ -302,7 +351,7 @@ C-----------------------------------------------------------------------
 
 !         modified by modified by RR 02/15/2016
 !         IF (XLAI .LT. 0.1*MAXLAI .OR. YRDOY .EQ. MDATE) THEN !Original function
-          IF (XLAI .LT. 0.01*MAXLAI .OR. YRDOY .EQ. MDATE) THEN 
+          IF (XLAI .LT. 0.01*MAXLAI .OR. YRDOY .EQ. MDATE) THEN
              STGDOY(ISTAGE) = YRDOY
              CALL PT_PHASEI (
      &         ISTAGE, CUMDTT, XPLANT, SPRLAP,            !I/O
@@ -310,13 +359,13 @@ C-----------------------------------------------------------------------
              IF (ISWWAT .NE. 'N') THEN
                 ! XANC = TANC*100.0
              ENDIF
-          END IF      
+          END IF
         CASE DEFAULT
           STOP 'Illegal value for ISTAGE in PHENOL module'
           END SELECT
 !       open (unit = 7, file = "c:\\visual\\SLFTTMAXOutput.txt")
 !        write (7, *) DTT,CUMDTT, XDTT,YRDOY ! print in file
-          
+
 !***********************************************************************
 !***********************************************************************
 !     END OF DYNAMIC IF CONSTRUCT
@@ -339,7 +388,7 @@ C  08/12/2003 CHP Added I/O error checking
 C=======================================================================
 
       SUBROUTINE PT_IPPHEN(
-     &    FILEIO, 
+     &    FILEIO,
      &    CROP, IEMRG, P2, PLANTS, SDEPTH, SPRLAP, TC, TCPLUS)
 
 C-----------------------------------------------------------------------
@@ -381,7 +430,7 @@ C    Read Planting Details Section
       IF (FOUND .EQ. 0) THEN
         CALL ERROR(SECTION, 42, FILEIO, LNUM)
       ELSE
-        READ (LUNIO,'(15X,I3,1X,F5.1,31X,F5.1,25X,F5.0)', IOSTAT=ERR) 
+        READ (LUNIO,'(15X,I3,1X,F5.1,31X,F5.1,25X,F5.0)', IOSTAT=ERR)
      &            IEMRG, PLANTS, SDEPTH, SPRLAP ; LNUM = LNUM + 1
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILEIO,LNUM)
       ENDIF

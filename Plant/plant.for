@@ -3,7 +3,7 @@ C COPYRIGHT 1998-2023
 C                     DSSAT Foundation
 C                     University of Florida, Gainesville, Florida
 C                     International Fertilizer Development Center
-C                     
+C
 C ALL RIGHTS RESERVED
 C=======================================================================
 C=======================================================================
@@ -58,8 +58,8 @@ C  08/09/2012 GH  Added CSCAS model
 !  03/17/2020  WP Model TEFF from Mulugeta called on plant (added).
 !  08/19/2021 FV Added OilcropSun
 !  06/15/2022 CHP Added CropStatus
-!  01/26/2023 CHP Reduce compile warnings: add EXTERNAL stmts, remove 
-!                 unused variables, shorten lines. 
+!  01/26/2023 CHP Reduce compile warnings: add EXTERNAL stmts, remove
+!                 unused variables, shorten lines.
 C=======================================================================
 
       SUBROUTINE PLANT(CONTROL, ISWITCH,
@@ -73,7 +73,7 @@ C=======================================================================
      &    PUptake, PORMIN, RLV, RWUMX, SENESCE,           !Output
      &    STGDOY, FracRts, UH2O, UNH4, UNO3, XHLAI, XLAI) !Output
 
-!     2023-01-26 chp removed unused variables from argument list: 
+!     2023-01-26 chp removed unused variables from argument list:
 !       TRWU, SomLitC, SomLitE, UPPM
 
 C-----------------------------------------------------------------------
@@ -348,7 +348,7 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
 !***********************************************************************
       ELSEIF (DYNAMIC .EQ. RATE) THEN
 !-----------------------------------------------------------------------
-      IF (CROP .NE. 'FA' .AND. 
+      IF (CROP .NE. 'FA' .AND.
      &    CONTROL % YRDOY .GE. YRPLT .AND. YRPLT .NE. -99) THEN
 
         SENESCE % ResWt  = 0.0
@@ -548,7 +548,7 @@ C         Variables to run CASUPRO from Alt_PLANT.  FSR 07-23-03
 !     -------------------------------------------------
 !     Potato
       CASE('PTSUB')
-        CALL PT_SUBSTOR(CONTROL, ISWITCH,
+        CALL PT_SUBSTOR(CONTROL, ISWITCH, WEATHER,
      &    CO2, EOP, HARVFRAC, NH4, NO3, SOILPROP, SRAD,   !Input
      &    ST, SW, TMAX, TMIN, TRWUP, TWILEN, YREND, YRPLT,!Input
      &    CANHT, HARVRES, MDATE, NSTRES, PORMIN, RLV,     !Output
@@ -651,7 +651,7 @@ c     Total LAI must exceed or be equal to healthy LAI:
      $    CANHT, KCAN, KTRANS, MDATE, NSTRES,             !Output
      &    RLV, RWUMX, STGDOY,                             !Output
      &    XLAI, XHLAI, EORATIO)                           !Output
-          
+
 !     -------------------------------------------------
 !     Sugarcane - CASUPRO
       CASE('SCCSP')
@@ -697,7 +697,7 @@ c     Total LAI must exceed or be equal to healthy LAI:
           KTRANS = KEP        !KJB/WDB/CHP 10/22/2003
           KSEVAP = KEP
         ENDIF
-        
+
 !     -------------------------------------------------
 !     Aroids-taro
       CASE('TRARO','TNARO')
@@ -766,12 +766,12 @@ c     Total LAI must exceed or be equal to healthy LAI:
       ELSEIF (DYNAMIC .EQ. SEASEND) THEN
 !-----------------------------------------------------------------------
 !     Store Summary.out labels and values in arrays to send to
-!     OPSUM routines for printing.  Integers are temporarily 
+!     OPSUM routines for printing.  Integers are temporarily
 !     saved as real numbers for placement in real array.
       LABEL(1)  = 'CRST'; VALUE(1)  = CONTROL % CropStatus
 
       !Send labels and values to OPSUM
-      CALL SUMVALS (SUMNUM, LABEL, VALUE) 
+      CALL SUMVALS (SUMNUM, LABEL, VALUE)
 
 ! End of season crop status codes:
 ! CRST - Definition                               Status **
@@ -782,7 +782,7 @@ c     Total LAI must exceed or be equal to healthy LAI:
 !   11 - failure to plant (automatic planting)    NO_SOW
 !   12 - failure to germinate                     NOGERM
 !   13 - failure to emerge                        NOEMRG
-!   21 - crop mature due to slow grain filling    SLOGRN 
+!   21 - crop mature due to slow grain filling    SLOGRN
 !   31 - crop died due to heat stress             HOT
 !   32 - crop died due to cold stress             COLD
 !   33 - crop died due to deficit water stress    DRY
@@ -826,21 +826,21 @@ c     Total LAI must exceed or be equal to healthy LAI:
 !             management. Structure of variable is defined in ModuleDefs.for.
 ! HARVFRAC  Two-element array containing fractions of (1) yield harvested
 !             and (2) by-product harvested (fraction)
-! HARVRES   Composite variable containing harvest residue amounts for total 
-!             dry matter, lignin, and N amounts.  Structure of variable is 
-!             defined in ModuleDefs.for. 
-! ISWITCH   Composite variable containing switches which control flow of 
-!             execution for model.  The structure of the variable 
-!             (SwitchType) is defined in ModuleDefs.for. 
+! HARVRES   Composite variable containing harvest residue amounts for total
+!             dry matter, lignin, and N amounts.  Structure of variable is
+!             defined in ModuleDefs.for.
+! ISWITCH   Composite variable containing switches which control flow of
+!             execution for model.  The structure of the variable
+!             (SwitchType) is defined in ModuleDefs.for.
 ! IRRAMT    Irrigation amount (mm)
-! KCAN      Canopy light extinction coefficient for daily PAR, for 
-!             equidistant plant spacing, modified when in-row and between 
-!             row spacing are not equal 
-! KEP       Energy extinction coefficient for partitioning EO to EP 
-! KSEVAP    Light extinction coefficient used for computation of soil 
-!             evaporation 
-! KTRANS    Light extinction coefficient used for computation of plant 
-!             transpiration 
+! KCAN      Canopy light extinction coefficient for daily PAR, for
+!             equidistant plant spacing, modified when in-row and between
+!             row spacing are not equal
+! KEP       Energy extinction coefficient for partitioning EO to EP
+! KSEVAP    Light extinction coefficient used for computation of soil
+!             evaporation
+! KTRANS    Light extinction coefficient used for computation of plant
+!             transpiration
 ! MDATE     Harvest maturity date (YYYYDDD)
 ! MEEVP     Method of evapotranspiration ('P'=Penman, 'R'=Priestly-Taylor,
 !             'Z'=Zonal)
@@ -895,7 +895,7 @@ c     Total LAI must exceed or be equal to healthy LAI:
 !===========================================================================
       SUBROUTINE READ_ASCE_KT(CONTROL, MEEVP)
 !     Generic routine to read evapotranspiration species parameters
-!     KEP, EORATIO 
+!     KEP, EORATIO
 !     TSKC, TKCBmax ASCE tall ref (50 cm alfalfa)
 !     SSKC, SKCBmax ASCE short ref (12 cm grass)
 
@@ -922,7 +922,7 @@ c     Total LAI must exceed or be equal to healthy LAI:
 !     Species-dependant variables exported to SPAM:
       REAL KEP, EORATIO, SSKC, SKCBMAX, TSKC, TKCBMAX
 
-!     The variable "CONTROL" is of constructed type "ControlType" as 
+!     The variable "CONTROL" is of constructed type "ControlType" as
 !     defined in ModuleDefs.for, and contains the following variables.
 !     The components are copied into local variables for use here.
       TYPE (ControlType) CONTROL
@@ -932,7 +932,7 @@ c     Total LAI must exceed or be equal to healthy LAI:
       NMSG = 0
 
 !-----------------------------------------------------------------------
-!     Read file plus path for species file 
+!     Read file plus path for species file
 !-----------------------------------------------------------------------
       FILEIO = CONTROL % FILEIO
       LUNIO  = CONTROL % LUNIO
@@ -975,7 +975,7 @@ c     Total LAI must exceed or be equal to healthy LAI:
             MSG(NMSG)="Error reading KEP and EORATIO."
           ENDIF
         ENDIF
-        
+
 !       Read short reference crop parameters
         CALL IGNORE(LUNCRP,LNUM,ISECT,CHAR)
         IF(ISECT .NE. 1) CALL ERROR (ERRKEY,1,FILECC,LNUM)
@@ -1007,7 +1007,7 @@ c     Total LAI must exceed or be equal to healthy LAI:
             MSG(NMSG) = "SKCBMAX for ASCE PET method is out of range."
           ENDIF
         ENDIF
-        
+
         IF (MEEVP .EQ. 'T') THEN
           IF (TSKC .LT. 0.30 .OR. TSKC .GT. 1.0) THEN
             NMSG = NMSG + 1
@@ -1018,7 +1018,7 @@ c     Total LAI must exceed or be equal to healthy LAI:
             MSG(NMSG) = "TKCBMAX for ASCE PET method is out of range."
           ENDIF
         ENDIF
-        
+
       ELSE
 !       If fallow, use minimum values
         SSKC    = 0.30

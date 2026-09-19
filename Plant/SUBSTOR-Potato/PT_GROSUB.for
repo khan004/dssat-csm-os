@@ -32,10 +32,11 @@ C=======================================================================
      &    DEADLF, GRAINN, LFWT, NSTRES, PLTPOP, ROOTN,    !Output
      &    RTWT, SDWTPL, SEEDNI, SENESCE, STMWT, STOVN,    !Output
      &    STOVWT, TOPSN, TOPWT, TRNU, TUBN, TUBWT,        !Output
-     &    UNH4, UNO3, WTNCAN, WTNLO, WTNUP, XLAI)         !Output
+     &    UNH4, UNO3, WTNCAN, WTNLO, WTNUP, XLAI,         !Output
+     &    TBD, TOD, TCD, TSEN, SBD, SOD, SCD, SSEN)       !Output: Added by Khan for PT_BTHTIME
 
 C-----------------------------------------------------------------------
-      USE ModuleDefs     !Definitions of constructed variable types, 
+      USE ModuleDefs     !Definitions of constructed variable types,
                          ! which contain control information, soil
                          ! parameters, hourly weather data.
       IMPLICIT  NONE
@@ -53,6 +54,7 @@ C-----------------------------------------------------------------------
 
       REAL AGEFAC, ARVCHO, BIOMAS, CANNAA, CANWAA
       REAL BWRATIO, RUE1, RUE2
+      REAL TBD, TOD, TCD, TSEN, SBD, SOD, SCD, SSEN ! Added by Khan for PT_BTHTIME call
       REAL CARBO, CNSD1, CNSD2, CO2
       REAL CUMDTT, DEVEFF, DDEADLF, DEADLF, DEADLN, DTT, ETGT
       REAL G2, G3, GRAINN, GRF, GROLF, GROPLNT, GRORT
@@ -72,16 +74,17 @@ C-----------------------------------------------------------------------
       REAL SLFT_TMAX, SLFT_TMIN, ALIN, MIN
 
       REAL DTII(3)
-      TYPE (ResidueType) SENESCE 
+      TYPE (ResidueType) SENESCE
 
       REAL, DIMENSION(4)  :: SENST, SENSF
       REAL, DIMENSION(10) :: CO2X, CO2Y
-      REAL, DIMENSION(NL) :: DLAYR, DUL, KG2PPM, LL, 
-     &    NH4, NO3, RLV, SAT, SW, UNO3, UNH4  
+      REAL, DIMENSION(NL) :: DLAYR, DUL, KG2PPM, LL,
+     &    NH4, NO3, RLV, SAT, SW, UNO3, UNH4
 
+      ! Khan: Moved LALWR to CUL file
 !      DATA  LALWR, SLAN /270.,0./
 !      DATA  LALWR /270./      !leaf area:leaf wt. ratio (cm2/g)
-     
+
 !***********************************************************************
 !***********************************************************************
 !     Seasonal Initialization - Called once per season
@@ -91,7 +94,8 @@ C-----------------------------------------------------------------------
       CALL PT_IPGRO(
      &    FILEIO,                                         !Input
      &    CO2X, CO2Y, G2, G3, PD, PLME, PLTPOP,           !Output
-     &    SDWTPL, RUE1, RUE2, SENSF, SENST, LALWR)        !Output
+     &    SDWTPL, RUE1, RUE2, SENSF, SENST, LALWR,        !Output
+     &    TBD, TOD, TCD, TSEN, SBD, SOD, SCD, SSEN)       !Output: Added by Khan for PT_BTHTIME
 
       IF (PLME .EQ. 'B') THEN
         !Bed width ratio = Bed width / Row Spacing
@@ -170,8 +174,8 @@ C-----------------------------------------------------------------------
       TUBANC  = 0.0  !Note conflict with IPLNT initialization (above)
       TUBN    = 0.0
       TUBWT   = 0.0
-      
-      CALL PT_NUPTAK (SEASINIT, 
+
+      CALL PT_NUPTAK (SEASINIT,
      &    ISTAGE, DLAYR, DUL, KG2PPM, LL, NH4, NLAYR, NO3,!Input
      &    PLTPOP, RCNP, RLV, RTWT, SAT, SW, TCNP, TMNC,   !Input
      &    TOPWT, TUBCNP, TUBWT,                           !Input
@@ -195,7 +199,7 @@ C-----------------------------------------------------------------------
       ELSEIF (DYNAMIC .EQ. RATE) THEN
 !-----------------------------------------------------------------------
 
-      IF (FIRST) THEN     !Initializations from PHASEI, all Case(7), 
+      IF (FIRST) THEN     !Initializations from PHASEI, all Case(7),
                           ! except where noted.
         FIRST   = .FALSE.
 !        XLAI    = PLA * PLANTS * 0.0001
@@ -203,10 +207,10 @@ C-----------------------------------------------------------------------
         IF (PLME .EQ. 'B') THEN               !WM
           XLAI    = XLAI * BWRATIO            !WM
         ENDIF                                 !WM
-        LFWT    = 0.093                
-        PLA     = 25.0        !cm2/plant             
-        STMWT   = LFWT                 
-        TOPWT   = 0.186                
+        LFWT    = 0.093
+        PLA     = 25.0        !cm2/plant
+        STMWT   = LFWT
+        TOPWT   = 0.186
         IF (ISWNIT .EQ. 'Y') THEN
           RANC  = 0.015
           TANC  = 0.045
@@ -214,8 +218,8 @@ C-----------------------------------------------------------------------
           ROOTN = RANC * RTWT
           TOPSN = TOPWT * TANC
           SEEDN = (RANC * RTWT) + (TOPWT * TANC)
-          SEEDNI = SEEDN * PLTPOP 
-          TUBANC = 0.014              !from PHASEI, Case(1) 
+          SEEDNI = SEEDN * PLTPOP
+          TUBANC = 0.014              !from PHASEI, Case(1)
           TUBWT = 0.010               !from PHASEI, Case(1)
           TUBN = TUBANC * TUBWT       !from PHASEI, Case(1)
           SEEDN  = SEEDN + TUBN       !from PHASEI, Case(1)
@@ -234,7 +238,7 @@ C-----------------------------------------------------------------------
          NSTRES = 1.0
          AGEFAC = 1.0
          NFAC   = 1.0
-      END IF   
+      END IF
 
       TEMPM = (TMAX + TMIN)/2.0         ! Mean temp. calculation
       !PRFT  = 1.2 - 0.0035*(TEMPM - 22.5)**2 !original funtion
@@ -246,19 +250,21 @@ C-----------------------------------------------------------------------
           PRFT  = AMAX1 (PRFT,0.0)
           PRFT  = AMIN1 (PRFT,1.0)
 
-      ELSEIF (TEMPM .GT. 14 .AND. TEMPM .LE. 24) THEN
+!     ELSEIF (TEMPM .GT. 14 .AND. TEMPM .LE. 24) THEN
+      ELSEIF (TEMPM .GT. 14 .AND. TEMPM .LE. 25) THEN !Khan: corrected as per Raymundo et al., 2018. European Journal of Agronomy, 100, 87-98
           PRFT = 1.0
-      ELSEIF (TEMPM .GT. 24 .AND. TEMPM .LE. 35) THEN
-!         RR linear function from 24 to 40  y = -0.0909x + 3.1818      
-          PRFT = -0.0909*(TEMPM) + 3.1818 
+!      ELSEIF (TEMPM .GT. 24 .AND. TEMPM .LE. 35) THEN
+      ELSEIF (TEMPM .GT. 25 .AND. TEMPM .LE. 35) THEN !Khan: correcetd as per Raymundo et al., 2018. European Journal of Agronomy, 100, 87-98
+!         RR linear function from 24 to 40  y = -0.0909x + 3.1818
+          PRFT = -0.0909*(TEMPM) + 3.1818
       ELSE
           PRFT = 0
       END IF
 !      --------End-----effect of Tmean on PRFT, modified by RR 02/15/2016
-!      
-    
+!
+
 !       Calculation of daily leaf senescence, begin
-!      
+!
       SELECT CASE (ISTAGE)
         CASE (1)                        ! Natural senescence, SLAN
           SLAN = CUMDTT*PLA/10000.
@@ -281,15 +287,15 @@ C        SLFN = 0.95 + 0.05*AGEFAC         ! ...Nitrogen stress
 !             SLFT = 0
          !ENDIF
          !
-         ! The following was causing the plant to die; modified 
-         ! temporarily, so that T factor SLFT will be very small 
+         ! The following was causing the plant to die; modified
+         ! temporarily, so that T factor SLFT will be very small
          ! but at least not ZERO.
          ! This NEEDS to be FIXED!!!  WTB, Lima, 28/06/96
          !
          ! With SLFT = 0, means all leaf area senesced!
          ! SLFT = 1.0 - 0.02*TMIN**2 was taken from SIMPOTATO V1.53
          !
-!        SA/CHP 9/2/2015. Introduce a high temperature function 
+!        SA/CHP 9/2/2015. Introduce a high temperature function
 !          based on that in NWheat model.
 !         IF (TMIN .LE. 0.0) THEN
 !           SLFT = 1.0 - (6.0 - TEMPM)/6.0
@@ -313,7 +319,7 @@ C        SLFN = 0.95 + 0.05*AGEFAC         ! ...Nitrogen stress
 
       IF (DDEADLF .GE. LFWT) THEN
           DDEADLF = LFWT
-      END IF   
+      END IF
 
 !     Senesced matter to surface residue
       SENESCE % ResWt(0) = DDEADLF * PLTPOP * 10. !/ 0.40
@@ -338,13 +344,13 @@ C        SLFN = 0.95 + 0.05*AGEFAC         ! ...Nitrogen stress
          TOPSN  = TOPSN  - (DDEADLF*TMNC)
          DEADLN = DEADLN + (DDEADLF*TMNC)
       ENDIF
-      
-!      This unction was merged with PRFT
+
+!      This function was merged with PRFT
 !      --------beggin----RR effect of Tmean on RUE 02/15/2016
 !      IF (TEMPM .LE. 24) THEN
 !          TX_RUE = 1.0
 !      ELSEIF (TEMPM .GT. 24 .AND. TEMPM .LE. 35) THEN
-!          TX_RUE = -0.0909*(TEMPM) + 3.1818 !RR linear function from 24 to 40  y = -0.0909x + 3.1818      
+!          TX_RUE = -0.0909*(TEMPM) + 3.1818 !RR linear function from 24 to 40  y = -0.0909x + 3.1818
 !      ELSE
 !         TX_RUE = 0
 !      END IF
@@ -372,8 +378,8 @@ C        SLFN = 0.95 + 0.05*AGEFAC         ! ...Nitrogen stress
       PCARB  = PCARB*PCO2*PRFT
 !     Modified by RR 02/15/2016
 !     CARBO  = PCARB*AMIN1(PRFT, SWFAC, NSTRES)*SLPF + 0.5*DDEADLF ! original function 02/15/2016
-      CARBO  = PCARB*AMIN1(SWFAC, NSTRES)*SLPF + 0.5*DDEADLF 
-      
+      CARBO  = PCARB*AMIN1(SWFAC, NSTRES)*SLPF + 0.5*DDEADLF
+
       RVCUSD = 0.0                                   ! Reserve C used
 
       SWFAC  = AMAX1 (SWFAC, 0.1)
@@ -385,7 +391,7 @@ C        SLFN = 0.95 + 0.05*AGEFAC         ! ...Nitrogen stress
           ! Vegetative Growth
           !
           ! Potential growth as function of temperature
-          ! Primary varaible is leaf expansion; other growth
+          ! Primary variable is leaf expansion; other growth
           ! parameters calculated from PLAG
           !
           GROTUB = 0.0
@@ -445,7 +451,7 @@ C        SLFN = 0.95 + 0.05*AGEFAC         ! ...Nitrogen stress
                  RVCHO  = 0.0
               END IF
               !
-              ! A reserve carbohydrate pool, limited to 10 % 
+              ! A reserve carbohydrate pool, limited to 10 %
               !       of haulm weight
            ELSE
               RVCUSD = 0.0
@@ -476,7 +482,7 @@ C        SLFN = 0.95 + 0.05*AGEFAC         ! ...Nitrogen stress
           !
           DEVEFF = AMIN1 ((XSTAGE - 2.0) * 10. * PD, 1.0)
           IF (NFAC .GT. 1.0) THEN
-             TIND = (DTII(1)+DTII(2)+DTII(3)/3.0)*(1./NFAC)*DEVEFF     
+             TIND = (DTII(1)+DTII(2)+DTII(3)/3.0)*(1./NFAC)*DEVEFF
            ELSE
              TIND = (DTII(1)+DTII(2)+DTII(3)/3.0)*DEVEFF
           END IF
@@ -489,17 +495,17 @@ C        SLFN = 0.95 + 0.05*AGEFAC         ! ...Nitrogen stress
            ELSEIF (TEMPM .GE. 15.0 .AND. TEMPM .LE. 23.0) THEN
              ETGT = 1.0
            ELSEIF (TEMPM .GT. 23.0 .AND. TEMPM .LT. 33.0) THEN
-             ETGT = 1.0 - 0.1*(TEMPM-23.0) 
+             ETGT = 1.0 - 0.1*(TEMPM-23.0)
            ELSE
              ETGT = 0.0
            ENDIF
-               
+
           ! Calculation of potential growth .. Set priorities for carbon
           !
 !          PTUBGR  = G3*ETGT/PLTPOP    !CHP
            PTUBGR  = G3 * PCO2 * ETGT/PLTPOP          !JIL   (Modified)
-          
-          
+
+
           IF (PLME .EQ. 'B') THEN                     !WM
             PTUBGR  = PTUBGR / BWRATIO                !WM
           ENDIF                                       !WM
@@ -516,12 +522,12 @@ C        SLFN = 0.95 + 0.05*AGEFAC         ! ...Nitrogen stress
           RTPAR   = 0.2
           GRORT   = (GROLF + GROSTM)* RTPAR
           GROPLNT =  GROLF + GROSTM + GRORT
-          RVCAV   = RVCHO                  
+          RVCAV   = RVCHO
           CARBO   = CARBO + RVCAV
           !
-          ! Partitions C based on tuber being first priority; 
-          ! C becomes progressively more limiting in this routine, 
-          ! and growth reduction factor (GRF) is implemented to 
+          ! Partitions C based on tuber being first priority;
+          ! C becomes progressively more limiting in this routine,
+          ! and growth reduction factor (GRF) is implemented to
           ! reduce potential growth
           !
           IF (CARBO .GE. GROTUB) THEN
@@ -543,7 +549,7 @@ C        SLFN = 0.95 + 0.05*AGEFAC         ! ...Nitrogen stress
                    ELSE
                      RVCUSD = RVCAV - RVCHO
                   END IF
-              END IF    
+              END IF
            ELSE
               GROTUB = CARBO
               GROLF  = 0.0
@@ -564,7 +570,7 @@ C        SLFN = 0.95 + 0.05*AGEFAC         ! ...Nitrogen stress
       ! N subroutines are called;  compare potential
       ! growth (carbon-driven) with available N and
       ! adjusts growth if necessary
-      !                             
+      !
       IF (ISWNIT .NE. 'N') THEN
           ! IF (SEEDAV .GT. 0.0) THEN
           !    SRVNU = RVCUSD*0.014       ! Seed reserve N used
@@ -581,21 +587,21 @@ C        SLFN = 0.95 + 0.05*AGEFAC         ! ...Nitrogen stress
      &    WTNUP)                                          !Output
 
 !-----------------------------------------------------------------------
-! Jan 2000, Walter Bowen 
-! Before going into NUPTAK, GROTOP was set equal to GROLF+GROSTM, 
-! with GROSTM = GROLF * 0.75. As shown below, after coming out of 
-! NUPTAK, GROLF was then set to GROTOP*0.5, which always results 
-! in a loss of C. The equation was corrected as shown: 
-! GROTOP = GROLF + GROSTM 
-!       = GROLF + (GROLF*0.75) 
-!       = GROLF*(1 + (1*0.75)) 
-!       = GROLF * 1.75 
-! thus, GROLF = GROTOP * (1/1.75) 
-! was...   GROLF   = GROTOP * 0.50 
-! should be: 
-          GROLF   = GROTOP * (1/1.75) 
-          GROSTM  = GROLF  * 0.75                    ! Added 0.75 (WTB) 
-          GROPLNT = GROLF  + GROSTM + GRORT 
+! Jan 2000, Walter Bowen
+! Before going into NUPTAK, GROTOP was set equal to GROLF+GROSTM,
+! with GROSTM = GROLF * 0.75. As shown below, after coming out of
+! NUPTAK, GROLF was then set to GROTOP*0.5, which always results
+! in a loss of C. The equation was corrected as shown:
+! GROTOP = GROLF + GROSTM
+!       = GROLF + (GROLF*0.75)
+!       = GROLF*(1 + (1*0.75))
+!       = GROLF * 1.75
+! thus, GROLF = GROTOP * (1/1.75)
+! was...   GROLF   = GROTOP * 0.50
+! should be:
+          GROLF   = GROTOP * (1/1.75)
+          GROSTM  = GROLF  * 0.75                    ! Added 0.75 (WTB)
+          GROPLNT = GROLF  + GROSTM + GRORT
 !-----------------------------------------------------------------------
 
           IF (ARVCHO .GT. 0.) THEN
@@ -693,10 +699,11 @@ C=======================================================================
       SUBROUTINE PT_IPGRO(
      &    FILEIO,                                         !Input
      &    CO2X, CO2Y, G2, G3, PD, PLME, PLTPOP,           !Output
-     &    SDWTPL, RUE1, RUE2, SENSF, SENST, LALWR)        !Output
+     &    SDWTPL, RUE1, RUE2, SENSF, SENST, LALWR,        !Output
+     &    TBD, TOD, TCD, TSEN, SBD, SOD, SCD, SSEN)       !Output: Added by Khan for PT_BTHTIME
 
 !     ------------------------------------------------------------------
-      USE ModuleDefs     !Definitions of constructed variable types, 
+      USE ModuleDefs     !Definitions of constructed variable types,
                          ! which contain control information, soil
                          ! parameters, hourly weather data.
       IMPLICIT NONE
@@ -708,7 +715,7 @@ C=======================================================================
       CHARACTER*6, PARAMETER :: ERRKEY = 'GROSUB'
 
       CHARACTER*2   CROP
-      CHARACTER*5   ACRO(4)  
+      CHARACTER*5   ACRO(12)
       CHARACTER*6   SECTION, ECONO, ECOTYP
       CHARACTER*12  FILEC, FILEE
       CHARACTER*16  ECONAM
@@ -722,9 +729,10 @@ C=======================================================================
 
       REAL G2, G3, PD, PLTPOP, SDWTPL, RUE1, RUE2
       REAL LALWR
+      REAL TBD, TOD, TCD, TSEN, SBD, SOD, SCD, SSEN ! Added by Khan for PT_BTHTIME
       REAL, DIMENSION(4) :: SENST, SENSF
       REAL CO2X(10), CO2Y(10)
-      
+
 !      LOGICAL EOF
 !-----------------------------------------------------------------------
 !     Read data from FILEIO for use in GROSUB module
@@ -756,7 +764,7 @@ C    Read Planting Details Section
       IF (FOUND .EQ. 0) THEN
         CALL ERROR(SECTION, 42, FILEIO, LNUM)
       ELSE
-        READ (LUNIO,'(25X,F5.1,5X,A1,25X,F5.0)', IOSTAT=ERR) 
+        READ (LUNIO,'(25X,F5.1,5X,A1,25X,F5.0)', IOSTAT=ERR)
      &        PLTPOP, PLME, SDWTPL ; LNUM = LNUM + 1
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILEIO,LNUM)
       ENDIF
@@ -768,7 +776,7 @@ C     Read crop genetic information
         CALL ERROR(SECTION, 42, FILEIO, LNUM)
       ELSE
         IF (INDEX ('PT',CROP) .GT. 0) THEN
-          READ (LUNIO,'(24X,A6,1X,3F6.0,12X,F6.0)',IOSTAT=ERR) 
+          READ (LUNIO,'(24X,A6,1X,3F6.0,12X,F6.0)',IOSTAT=ERR)
      &          ECONO, G2, G3, PD, LALWR
           LNUM = LNUM + 1
           IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILEIO,LNUM)
@@ -794,6 +802,14 @@ C     Read Crop Parameters from FILEC
       ACRO(2) = 'CO2Y'
       ACRO(3) = 'SENST'
       ACRO(4) = 'SENSF'
+      ACRO(5) = 'TBD'
+      ACRO(6) = 'TOD'
+      ACRO(7) = 'TCD'
+      ACRO(8) = 'TSEN'
+      ACRO(9) = 'SBD'
+      ACRO(10) = 'SOD'
+      ACRO(11) = 'SCD'
+      ACRO(12) = 'SSEN'
       LNUM = 0
 
       DO WHILE (ERR == 0)
@@ -801,7 +817,7 @@ C     Read Crop Parameters from FILEC
         CALL IGNORE(LUNCRP,LNUM,ISECT,CHAR)
         IF (ISECT == 0) EXIT
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILEC,LNUM)
-        DO J = 1, 4
+        DO J = 1, 12
           IF (INDEX(CHAR(1:15),ACRO(J)) > 0) THEN
             SELECT CASE (J)
               CASE (1)
@@ -812,6 +828,22 @@ C     Read Crop Parameters from FILEC
                 READ (CHAR(16:39),'(10F6.0)',IOSTAT=ERR)(SENST(I),I=1,4)
               CASE (4)
                 READ (CHAR(16:39),'(10F6.0)',IOSTAT=ERR)(SENSF(I),I=1,4)
+               CASE (5)
+                READ (CHAR(16:66), '(F6.1)', IOSTAT=ERR) TBD
+              CASE (6)
+                READ (CHAR(16:66), '(F6.1)', IOSTAT=ERR) TOD
+              CASE (7)
+                READ (CHAR(16:66), '(F6.1)', IOSTAT=ERR) TCD
+              CASE (8)
+                READ (CHAR(16:66), '(F6.1)', IOSTAT=ERR) TSEN
+              CASE (9)
+                READ (CHAR(16:66), '(F6.1)', IOSTAT=ERR) SBD
+              CASE (10)
+                READ (CHAR(16:66), '(F6.1)', IOSTAT=ERR) SOD
+              CASE (11)
+                READ (CHAR(16:66), '(F6.1)', IOSTAT=ERR) SCD
+              CASE (12)
+                READ (CHAR(16:66), '(F6.1)', IOSTAT=ERR) SSEN
             END SELECT
             IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILEC,LNUM)
           ENDIF
@@ -846,7 +878,7 @@ C-----------------------------------------------------------------------
         DO WHILE (ECOTYP .NE. ECONO)
           CALL IGNORE(LUNECO, LNUM, ISECT, C255)
           IF (ISECT .EQ. 1 .AND. C255(1:1) .NE. ' ' .AND.
-     &          C255(1:1) .NE. '*') THEN  
+     &          C255(1:1) .NE. '*') THEN
             READ(C255,3100,IOSTAT=ERR) ECOTYP, ECONAM
 3100        FORMAT (A6,1X,A16)
             IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILEE,LNUM)

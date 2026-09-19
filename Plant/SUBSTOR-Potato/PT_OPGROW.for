@@ -5,22 +5,23 @@ C  Generates output for growth data
 C-----------------------------------------------------------------------
 C  Revision history
 C                 Written
-C  02/08/1993 PWW Header revision and minor changes 
-C  02/08/1993 PWW Added switch block, etc. 
+C  02/08/1993 PWW Header revision and minor changes
+C  02/08/1993 PWW Added switch block, etc.
 C  09/05/2001 CHP Modified for modular format
 C  08/20/2002 GH  Modified for Y2K
 C  07/08/2003 CHP Added senescence output to conform to other plant routines.
 C
 C=======================================================================
 
-      SUBROUTINE PT_OPGROW (CONTROL, ISWITCH, 
+      SUBROUTINE PT_OPGROW (CONTROL, ISWITCH, WEATHER,
      &    BIOMAS, DEADLF, GRAINN, ISTAGE, LFWT, MDATE,    !Input
      &    NLAYR, NSTRES, PLTPOP, RLV, ROOTN, RTDEP, RTWT, !Input
      &    SATFAC, SENESCE, STMWT, STOVN, STOVWT, SWFAC,   !Input
-     &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT)!Input
+     &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT,!Input
+     &    DTT, CUMDTT, STT, CUMSTT)                       !Input: By Khan for PT_BTHTIME
 
 !-----------------------------------------------------------------------
-      USE ModuleDefs     !Definitions of constructed variable types, 
+      USE ModuleDefs     !Definitions of constructed variable types,
                          ! which contain control information, soil
                          ! parameters, hourly weather data.
       IMPLICIT  NONE
@@ -30,14 +31,15 @@ C=======================================================================
       CHARACTER*1   IDETG, ISWNIT
       CHARACTER*12  OUTG, OUTPN
       CHARACTER*120 NITHEAD(4)
-      CHARACTER*220 GROHEAD(4)
+      CHARACTER*250 GROHEAD(4)
       CHARACTER*6, PARAMETER :: ERRKEY = 'OPGROW'
 
       INTEGER DAP, DAS, DOY, DYNAMIC, ERRNUM, FROP
       INTEGER I, ISTAGE, L, LUNIO, NLAYR
       INTEGER NOUTPN, NOUTDG, RUN, RSTAGE, TIMDIF
       INTEGER YEAR, YRDOY, MDATE, YRPLT
- 
+
+      REAL DTT, CUMDTT, STT, CUMSTT !Added by Khan for PT_BTHTIME
       REAL XLAI,STMWT,SDWT,WTLF,BIOMAS,RTWT,PODWT,SEEDNO
       REAL SLA,PCNL,TURFAC,CANHT,CANWH,RLV(20),HI,SHELPC,SHELLW
       REAL SDSIZE,PODNO,RTDEP,NSTRES,SWFAC,SATFAC,PLTPOP,GM2KG
@@ -50,8 +52,8 @@ C=======================================================================
       REAL WTNGRN, WTNLF, WTNRT, WTNSD, WTNSH, WTNST
       REAL WTNUP, WTNVEG
 
-      REAL CUMSENSURF, CUMSENSOIL, CUMSENSURFN, CUMSENSOILN  
-
+      REAL CUMSENSURF, CUMSENSOIL, CUMSENSURFN, CUMSENSOILN
+      REAL DAYL
       LOGICAL FEXIST, FIRST
 
 !-----------------------------------------------------------------------
@@ -60,6 +62,7 @@ C=======================================================================
 
 !     The variable "CONTROL" is of type "ControlType".
       TYPE (ControlType) CONTROL
+      TYPE (WeatherType) WEATHER
 
 !     The variable "ISWITCH" is of type "SwitchType".
       TYPE (SwitchType) ISWITCH
@@ -77,19 +80,21 @@ C=======================================================================
       YRDOY   = CONTROL % YRDOY
 
       ISWNIT  = ISWITCH % ISWNIT
+!     DAYL is embedded within WEATHER Variable Type
+      DAYL    = WEATHER % DAYL
 
 C-----------------------------------------------------------------------
-      DATA GROHEAD /
-!      DATA GROHEAD(1)/
-     &'! YR       Days  Days  Grow       Fresh          
-     &      Dry Weight                           Pod      Phot. Grow    
+       DATA GROHEAD /
+!    ! DATA GROHEAD(1)/
+     &'! YR       Days  Days  Grow       Fresh
+     &      Dry Weight                           Pod      Phot. Grow
      &   Leaf Shell   Spec    Canopy          Root  ³    Root Length Den
      &sity   ³ Senesced mass              ',
 
 !      DATA GROHEAD(2)/
      &'!   and   after after Stage  LAI  Yield  Leaf  St
      &em Tuber  Root  Crop  Tops DLeaf   HI   Wgt.   No.    Water     Ni
-     &t.   Nit -ing   Leaf  Hght  Brdth      Depth  ³     cm3/cm3   of 
+     &t.   Nit -ing   Leaf  Hght  Brdth      Depth  ³     cm3/cm3   of
      &soil    ³    (kg/ha)                ',
 
 !      DATA GROHEAD(3)/
@@ -98,12 +103,11 @@ C-----------------------------------------------------------------------
      &>³    %     %   Area    m     m           m   ³<------------------
      &------>³ Surface  Soil              ',
 
-!      DATA GROHEAD(4) / 
-     &'@YEAR DOY   DAS   DAP  GSTD  LAID  UYAD  LWAD  
-     &SWAD  UWAD  RWAD  TWAD  CWAD  DWAD  HIAD  EWAD  E#AD  WSPD  WSGD  
-     &NSTD  LN%D  SH%D  SLAD  CHTD  CWID  EWSD  RDPD  RL1D  RL2D  RL3D  
-!     &RL4D  RL5D              '/
-     &RL4D  RL5D  SNW0C  SNW1C'/
+!      DATA GROHEAD(4) /
+     & '@YEAR DOY   DAS   DAP  GSTD  LAID  UYAD  LWAD  SWAD  UWAD
+     &  RWAD  TWAD  CWAD  DWAD  HIAD  EWAD  E#AD  WSPD  WSGD  NSTD
+     &  LN%D  SH%D  SLAD  CHTD  CWID  EWSD  RDPD  RL1D  RL2D  RL3D
+     &  RL4D  RL5D  SNW0C  SNW1C  DTT  CUMDTT  STT  CUMSTT  DAYL'/
 
 C-----------------------------------------------------------------------
       DATA NITHEAD /
@@ -119,8 +123,8 @@ C-----------------------------------------------------------------------
      &'!     DOY   Sim Plant  ³<--- Kg/Ha -->³ ³<-- % --
      &>³  ³<--- kg/ha --->³ ³<----- % ----->³  Surface Soil',
 
-!      DATA NITHEAD(4)/  
-     &'@YEAR DOY   DAS   DAP  TUNA  UNAD  VNAD  UN%D  
+!      DATA NITHEAD(4)/
+     &'@YEAR DOY   DAS   DAP  TUNA  UNAD  VNAD  UN%D
      &VN%D   NUPC  LNAD  SNAD  LN%D  SN%D  RN%D  SNN0C  SNN1C'/
 
 !***********************************************************************
@@ -146,12 +150,12 @@ C-----------------------------------------------------------------------
         IF (FEXIST) THEN
           OPEN (UNIT = NOUTDG, FILE = OUTG, STATUS = 'OLD',
      &      IOSTAT = ERRNUM, POSITION = 'APPEND')
-          FIRST = .FALSE.  
+          FIRST = .FALSE.
         ELSE
           OPEN (UNIT = NOUTDG, FILE = OUTG, STATUS = 'NEW',
      &      IOSTAT = ERRNUM)
           WRITE(NOUTDG,'("*GROWTH ASPECTS OUTPUT FILE")')
-          FIRST = .TRUE.  
+          FIRST = .TRUE.
         ENDIF
 
         !Write headers
@@ -162,7 +166,7 @@ C       Variable heading for GROWTH.OUT
         WRITE (NOUTDG,2192) GROHEAD(2)
         WRITE (NOUTDG,2192) GROHEAD(3)
         WRITE (NOUTDG,2192) GROHEAD(4)
- 2192   FORMAT (A219)
+ 2192   FORMAT (A235)
 
         SEEDNO = 0.0
         GPP   = 0.0
@@ -197,7 +201,7 @@ C       Variable heading for GROWTH.OUT
       CUMSENSURF  = 0.0
       CUMSENSOIL  = 0.0
       CUMSENSURFN = 0.0
-      CUMSENSOILN = 0.0   
+      CUMSENSOILN = 0.0
 
 !***********************************************************************
 !***********************************************************************
@@ -208,8 +212,8 @@ C-----------------------------------------------------------------------
       IF (YRDOY .LT. YRPLT .AND. YRPLT .GT. 0) RETURN
 
 !     Accumulate senesced matter for surface and soil.
-      CUMSENSURF  = CUMSENSURF  + SENESCE % ResWt(0) 
-      CUMSENSURFN = CUMSENSURFN + SENESCE % ResE(0,1) 
+      CUMSENSURF  = CUMSENSURF  + SENESCE % ResWt(0)
+      CUMSENSURFN = CUMSENSURFN + SENESCE % ResE(0,1)
       DO L = 1, NLAYR
         CUMSENSOIL  = CUMSENSOIL  + SENESCE % ResWt(L)
         CUMSENSOILN = CUMSENSOILN + SENESCE % ResE(L,1)
@@ -217,6 +221,13 @@ C-----------------------------------------------------------------------
 
 !     Compute reported growth variables
       RSTAGE = ISTAGE
+
+!     After maturity, ISTAGE is reset internally to 5.
+!     Report stage 3 (harvest) in PlantGro.OUT.
+      IF (ISTAGE .EQ. 5 .AND. YRDOY .GE. MDATE) THEN
+         RSTAGE = 3
+      END IF
+
       SDWT   = TUBWT           !SDWT used by OPHARV, OPPHO and OPSEQ
       WTLF   = LFWT   * PLTPOP !WTLF used by OPNIT, OPPHO and OPOPS
 
@@ -242,7 +253,7 @@ C-----------------------------------------------------------------------
         PCNL = 0.0
       ENDIF
 
-!      WTNUP = WTNUP + TRNU * PLTPOP       !g[N]/m2 
+!      WTNUP = WTNUP + TRNU * PLTPOP       !g[N]/m2
 !   g[N]/m2 =   g[N]/plant * plant/m2
 C
 C     GM2KG converts gm/plant to kg/ha
@@ -263,8 +274,8 @@ C
       IF (BIOMAS .GT. 0.0 .AND. SDWT .GE. 0.0) THEN
         HI = SDWT*PLTPOP/BIOMAS
       ENDIF
-!      YIELD  = TUBWT*10.*PLTPOP   
-!      FRYLD = (YIELD/1000.)/0.2    
+!      YIELD  = TUBWT*10.*PLTPOP
+!      FRYLD = (YIELD/1000.)/0.2
       FRYLD = (TUBWT*10.*PLTPOP/1000.)/0.2   ! Fresh yield
 
 !---------------------------------------------------------------------------
@@ -314,7 +325,7 @@ C
 !---------------------------------------------------------------------------
       IF ((MOD(DAS,FROP) .EQ. 0)          !Daily output every FROP days,
      &  .OR. (YRDOY .EQ. YRPLT)           !on planting date, and
-     &  .OR. (YRDOY .EQ. MDATE)) THEN     !at harvest maturity 
+     &  .OR. (YRDOY .EQ. MDATE)) THEN     !at harvest maturity
 
         DAP = MAX(0,TIMDIF(YRPLT,YRDOY))
         IF (DAP > DAS) DAP = 0
@@ -329,10 +340,11 @@ C
      &        NINT(PODWT*GM2KG),NINT(PODNO),1.0-SWFAC,1.0-TURFAC,
      &        1.0-NSTRES,PCNL,SHELPC,SLA,CANHT,CANWH,SATFAC,
      &        (RTDEP/100),(RLV(I),I=1,5)
-     &       ,NINT(CUMSENSURF), NINT(CUMSENSOIL)
+     &       ,NINT(CUMSENSURF), NINT(CUMSENSOIL),
+     &       DTT,CUMDTT,STT,CUMSTT,DAYL
  400      FORMAT (1X,I4,1X,I3.3,3(1X,I5),1X,F5.2,1X,F5.1,7(1X,I5),
      &          1X,F5.3,2(1X,I5),3(1X,F5.3),2(1X,F5.2),1X,F5.1,
-     &          2(1X,F5.2),1X,F5.3,6(1X,F5.2), 2I6)
+     &          2(1X,F5.2),1X,F5.3,6(1X,F5.2), 2I6,5(1X,F6.2))
         ENDIF
 
 C-----------------------------------------------------------------------
@@ -343,7 +355,7 @@ C-----------------------------------------------------------------------
 !    &            (WTNUP*10.0), (WTNLF*10.0), (WTNST*10.0),  !WTNUP g/m2
      &            WTNUP, (WTNLF*10.0), (WTNST*10.0), !WTNUP kg/ha
      &            PCNL, PCNST, PCNRT
-     &    ,CUMSENSURFN, CUMSENSOILN     
+     &    ,CUMSENSURFN, CUMSENSOILN
  300      FORMAT (1X,I4,1X,I3.3,2(1X,I5),3(1X,F5.1),2(1X,F5.2),1X,F6.1,
      &        2(1X,F5.1),3(1X,F5.2)  !)
      &        ,2(1X,F6.2))

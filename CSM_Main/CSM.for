@@ -499,8 +499,8 @@ C-----------------------------------------------------------------------
 C     Calculate days after simulation (DAS) 
 C-----------------------------------------------------------------------
       CALL YR_DOY(YRDOY,YEAR,DOY)
-!     DAS   = MAX(0,TIMDIF(YRSIM,YRDOY))
-      DAS   = MAX(0,TIMDIF(INCYD(YRSIM,-1),YRDOY))
+      DAS   = MAX(0,TIMDIF(YRSIM,YRDOY))
+!      DAS   = MAX(0,TIMDIF(INCYD(YRSIM,-1),YRDOY))
       CONTROL % YRDOY   = YRDOY
       CONTROL % DAS     = DAS
 C*********************************************************************** 

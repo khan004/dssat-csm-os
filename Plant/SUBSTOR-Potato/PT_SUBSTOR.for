@@ -12,7 +12,7 @@ C  Main routine for potato growth module.
 C-----------------------------------------------------------------------
 C  Revision history
 C
-C  08/29/2001 CHP Written for modular pototo model to be incorporated 
+C  08/29/2001 CHP Written for modular pototo model to be incorporated
 C                   into CROPGRO.
 C  03/12/2003 CHP Changed senescence variable to composite (SENESCE)
 C                   as defined in ModuleDefs.for
@@ -20,22 +20,22 @@ C  12/17/2004 CHP Modified HRESCeres call for harvest residue
 C  08/17/2005 CHP Renamed to PT_SUBSTOR to accomodate TN, TR SUBSTOR
 C                 routines.
 C  08/23/2011 GH Added CO2 response for tuber growth
-!  01/26/2023 CHP Reduce compile warnings: add EXTERNAL stmts, remove 
-!                 unused variables, shorten lines. 
+!  01/26/2023 CHP Reduce compile warnings: add EXTERNAL stmts, remove
+!                 unused variables, shorten lines.
 C=======================================================================
 
       SUBROUTINE PT_SUBSTOR(CONTROL, ISWITCH,
-     &    CO2, EOP, HARVFRAC, NH4, NO3, SOILPROP, SRAD,   !Input
-     &    ST, SW, TMAX, TMIN, TRWUP, TWILEN, YREND, YRPLT,!Input
-     &    CANHT, HARVRES, MDATE, NSTRES, PORMIN, RLV,     !Output
-     &    RWUMX, SENESCE, STGDOY, UNH4, UNO3, XLAI)       !Output
+     &    WEATHER, CO2, EOP, HARVFRAC, NH4, NO3, SOILPROP,   !Input
+     &    SRAD, ST, SW, TMAX, TMIN, TRWUP, TWILEN, YREND,    !Input
+     &    YRPLT, CANHT, HARVRES, MDATE, NSTRES, PORMIN, RLV, !Output
+     &    RWUMX, SENESCE, STGDOY, UNH4, UNO3, XLAI)          !Output
 
 !-----------------------------------------------------------------------
-      USE ModuleDefs     !Definitions of constructed variable types, 
+      USE ModuleDefs     !Definitions of constructed variable types,
                          ! which contain control information, soil
                          ! parameters, hourly weather data.
       IMPLICIT NONE
-      EXTERNAL PT_OPGROW, PT_OPHARV, PT_IPSPE, PT_ROOTGR, PT_PHENOL, 
+      EXTERNAL PT_OPGROW, PT_OPHARV, PT_IPSPE, PT_ROOTGR, PT_PHENOL,
      &  PT_GROSUB, HRes_Ceres
       SAVE
 
@@ -49,7 +49,7 @@ C=======================================================================
 
       REAL AGEFAC, APTNUP, BIOMAS, BWAH, CANNAA, CANWAA
       REAL CANHT, CNSD1, CNSD2, CO2
-      REAL CUMDEP, CUMDTT, DEADLF, DTT, EOP, EP1, GNUP
+      REAL CUMDEP, CUMDTT, CUMSTT, DEADLF, DTT, EOP, EP1, GNUP
       REAL GRAINN, GRNWT, GRORT, LFWT, MAXLAI, NSTRES
       REAL PLANTS, PLTPOP, PODWT, ROOTN, RTDEP, RTF
       REAL RTWT, SDWTAH, SDWTPL, SEEDNI, SEEDRV, SRAD, STMWT, STOVN
@@ -57,6 +57,7 @@ C=======================================================================
       REAL STOVWT, STT, SWFAC, TMAX, TMIN, TOPSN
       REAL TOPWT, TOTNUP, TRNU, TUBN, TUBWT, TURFAC, TWILEN
       REAL WTNCAN, WTNLO, XLAI, XSTAGE
+      REAL TBD, TOD, TCD, TSEN, SBD, SOD, SCD, SSEN
       REAL SDWT, SEEDNO, TRWUP, WTNSD, WTNUP, YIELD
 
       REAL SATFAC !SATFAC imported only for PT_OPGROW
@@ -66,7 +67,9 @@ C=======================================================================
 
       REAL, DIMENSION(NL) :: DLAYR, DUL, DS, LL, KG2PPM
       REAL, DIMENSION(NL) :: NH4, NO3, RLV, SAT, SHF
-      REAL, DIMENSION(NL) :: ST, SW, UNO3, UNH4 
+      REAL, DIMENSION(NL) :: ST, SW, UNO3, UNH4
+
+      TYPE (WeatherType) WEATHER
 
 !     P variables
       REAL PConc_Shut, PConc_Root, PConc_Shel, PConc_Seed
@@ -87,16 +90,16 @@ C=======================================================================
       YRDOY   = CONTROL % YRDOY
       YRSIM   = CONTROL % YRSIM
 
-      DLAYR  = SOILPROP % DLAYR  
-      DS     = SOILPROP % DS     
-      DUL    = SOILPROP % DUL 
-      KG2PPM = SOILPROP % KG2PPM     
-      LL     = SOILPROP % LL     
-      NLAYR  = SOILPROP % NLAYR  
-      SAT    = SOILPROP % SAT    
+      DLAYR  = SOILPROP % DLAYR
+      DS     = SOILPROP % DS
+      DUL    = SOILPROP % DUL
+      KG2PPM = SOILPROP % KG2PPM
+      LL     = SOILPROP % LL
+      NLAYR  = SOILPROP % NLAYR
+      SAT    = SOILPROP % SAT
       SHF    = SOILPROP % WR
-      SLPF   = SOILPROP % SLPF   
-   
+      SLPF   = SOILPROP % SLPF
+
       IDETG  = ISWITCH % IDETG
       ISWNIT = ISWITCH % ISWNIT
       ISWWAT = ISWITCH % ISWWAT
@@ -107,13 +110,14 @@ C=======================================================================
 !***********************************************************************
       IF (DYNAMIC .EQ. RUNINIT) THEN
 !-----------------------------------------------------------------------
-      CALL PT_OPGROW(CONTROL, ISWITCH, 
+      CALL PT_OPGROW(CONTROL, ISWITCH, WEATHER,
      &    BIOMAS, DEADLF, GRAINN, ISTAGE, LFWT, MDATE,    !Input
      &    NLAYR, NSTRES, PLTPOP, RLV, ROOTN, RTDEP, RTWT, !Input
      &    SATFAC, SENESCE, STMWT, STOVN, STOVWT, SWFAC,   !Input
-     &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT)!Input
+     &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT,!Input
+     &    DTT, CUMDTT, STT, CUMSTT)                       !Input: By Khan for PT_BTHTIME
 
-      CALL PT_OPHARV(CONTROL, ISWITCH, 
+      CALL PT_OPHARV(CONTROL, ISWITCH,
      &    AGEFAC, APTNUP, BIOMAS, GNUP, HARVFRAC, ISDATE, !Input
      &    ISTAGE, MAXLAI, MDATE, NSTRES, PLTPOP, SDWT,    !Input
      &    SDWTPL, SEEDNO, STGDOY, STOVWT, SWFAC, TOTNUP,  !Input
@@ -151,12 +155,13 @@ C=======================================================================
      &    CUMDEP, RLV, RTDEP)                             !Output
 
       CALL PT_PHENOL (
-     &    DLAYR, FILEIO, GRAINN, ISWWAT, LL, MDATE, NLAYR,!Input
-     &    NSTRES, PLTPOP, RTWT, ST, SW, SWFAC, TMAX, TMIN,!Input
-     &    TOPSN, TWILEN, XLAI, YRDOY, YRPLT, YRSIM,       !Input
-     &    APTNUP, CUMDTT, DTT, GNUP, GRORT, ISDATE,       !Output
-     &    ISTAGE, MAXLAI, PLANTS, RTF, SEEDRV,            !Output
-     &    STGDOY, STT, TOTNUP, XSTAGE, YREMRG,            !Output
+     &    DLAYR, FILEIO, GRAINN, ISWWAT, LL, MDATE, !Input
+     &    NLAYR, NSTRES, PLTPOP, RTWT, ST, SW, SWFAC, TMAX,  !Input
+     &    TMIN, TOPSN, TWILEN, XLAI, YRDOY, YRPLT, YRSIM,    !Input
+     &    TBD, TOD, TCD, TSEN, SBD, SOD, SCD, SSEN,          ! Now have values from PT_GROSUB
+     &    APTNUP, CUMDTT, DTT, GNUP, GRORT, ISDATE,          !Output
+     &    ISTAGE, MAXLAI, PLANTS, RTF, SEEDRV,               !Output
+     &    STGDOY, STT, TOTNUP, XSTAGE, YREMRG, CUMSTT,       !Output
      &    SEASINIT)
 
       CALL PT_GROSUB (SEASINIT,
@@ -169,17 +174,19 @@ C=======================================================================
      &    DEADLF, GRAINN, LFWT, NSTRES, PLTPOP, ROOTN,    !Output
      &    RTWT, SDWTPL, SEEDNI, SENESCE, STMWT, STOVN,    !Output
      &    STOVWT, TOPSN, TOPWT, TRNU, TUBN, TUBWT,        !Output
-     &    UNH4, UNO3, WTNCAN, WTNLO, WTNUP, XLAI)         !Output
+     &    UNH4, UNO3, WTNCAN, WTNLO, WTNUP, XLAI,         !Output
+     &    TBD, TOD, TCD, TSEN, SBD, SOD, SCD, SSEN)       ! NEW OUTPUT from PT_GROSUB
 
       STGDOY(14) = YRSIM
 
-      CALL PT_OPGROW(CONTROL, ISWITCH, 
+      CALL PT_OPGROW(CONTROL, ISWITCH, WEATHER,
      &    BIOMAS, DEADLF, GRAINN, ISTAGE, LFWT, MDATE,    !Input
      &    NLAYR, NSTRES, PLTPOP, RLV, ROOTN, RTDEP, RTWT, !Input
      &    SATFAC, SENESCE, STMWT, STOVN, STOVWT, SWFAC,   !Input
-     &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT)!Input
+     &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT,!Input
+     &    DTT, CUMDTT, STT, CUMSTT)                       !Input: By Khan for PT_BTHTIME
 
-      CALL PT_OPHARV(CONTROL, ISWITCH, 
+      CALL PT_OPHARV(CONTROL, ISWITCH,
      &    AGEFAC, APTNUP, BIOMAS, GNUP, HARVFRAC, ISDATE, !Input
      &    ISTAGE, MAXLAI, MDATE, NSTRES, PLTPOP, SDWT,    !Input
      &    SDWTPL, SEEDNO, STGDOY, STOVWT, SWFAC, TOTNUP,  !Input
@@ -212,7 +219,7 @@ C=======================================================================
         ! WRESR growth and depth routine
         !
         IF (GRORT .GT. 0.0) THEN
-          CALL PT_ROOTGR (RATE, 
+          CALL PT_ROOTGR (RATE,
      &    DLAYR, DS, DTT, DUL, FILEIO, GRORT, ISWNIT,     !Input
      &    LL, NH4, NLAYR, NO3, PLTPOP, SHF, SW, SWFAC,    !Input
      &    CUMDEP, RLV, RTDEP)                             !Output
@@ -221,12 +228,13 @@ C=======================================================================
 
       IF (YRDOY .EQ. YRPLT .OR. ISTAGE .NE. 5) THEN
         CALL PT_PHENOL (
-     &    DLAYR, FILEIO, GRAINN, ISWWAT, LL, MDATE, NLAYR,!Input
-     &    NSTRES, PLTPOP, RTWT, ST, SW, SWFAC, TMAX, TMIN,!Input
-     &    TOPSN, TWILEN, XLAI, YRDOY, YRPLT, YRSIM,       !Input
-     &    APTNUP, CUMDTT, DTT, GNUP, GRORT, ISDATE,       !Output
-     &    ISTAGE, MAXLAI, PLANTS, RTF, SEEDRV,            !Output
-     &    STGDOY, STT, TOTNUP, XSTAGE, YREMRG,            !Output
+     &    DLAYR, FILEIO, GRAINN, ISWWAT, LL, MDATE, !Input
+     &    NLAYR, NSTRES, PLTPOP, RTWT, ST, SW, SWFAC, TMAX,  !Input
+     &    TMIN, TOPSN, TWILEN, XLAI, YRDOY, YRPLT, YRSIM,    !Input
+     &    TBD, TOD, TCD, TSEN, SBD, SOD, SCD, SSEN,          ! Reuse values from SEASINIT
+     &    APTNUP, CUMDTT, DTT, GNUP, GRORT, ISDATE,          !Output
+     &    ISTAGE, MAXLAI, PLANTS, RTF, SEEDRV,               !Output
+     &    STGDOY, STT, TOTNUP, XSTAGE, YREMRG, CUMSTT,       !Output
      &    RATE)
       ENDIF
 
@@ -241,7 +249,8 @@ C=======================================================================
      &    DEADLF, GRAINN, LFWT, NSTRES, PLTPOP, ROOTN,    !Output
      &    RTWT, SDWTPL, SEEDNI, SENESCE, STMWT, STOVN,    !Output
      &    STOVWT, TOPSN, TOPWT, TRNU, TUBN, TUBWT,        !Output
-     &    UNH4, UNO3, WTNCAN, WTNLO, WTNUP, XLAI)         !Output
+     &    UNH4, UNO3, WTNCAN, WTNLO, WTNUP, XLAI,         !Output
+     &    TBD, TOD, TCD, TSEN, SBD, SOD, SCD, SSEN)       !Output: Added by Khan for PT_BTHTIME
       ELSE
         UNO3 = 0.0
         UNH4 = 0.0
@@ -257,13 +266,14 @@ C=======================================================================
         STGDOY(20) = YREND
       ENDIF
 
-      CALL PT_OPGROW(CONTROL, ISWITCH, 
+      CALL PT_OPGROW(CONTROL, ISWITCH, WEATHER,
      &    BIOMAS, DEADLF, GRAINN, ISTAGE, LFWT, MDATE,    !Input
      &    NLAYR, NSTRES, PLTPOP, RLV, ROOTN, RTDEP, RTWT, !Input
      &    SATFAC, SENESCE, STMWT, STOVN, STOVWT, SWFAC,   !Input
-     &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT)!Input
+     &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT,!Input
+     &    DTT, CUMDTT, STT, CUMSTT)                       !Input: By Khan for PT_BTHTIME
 
-      CALL PT_OPHARV(CONTROL, ISWITCH, 
+      CALL PT_OPHARV(CONTROL, ISWITCH,
      &    AGEFAC, APTNUP, BIOMAS, GNUP, HARVFRAC, ISDATE, !Input
      &    ISTAGE, MAXLAI, MDATE, NSTRES, PLTPOP, SDWT,    !Input
      &    SDWTPL, SEEDNO, STGDOY, STOVWT, SWFAC, TOTNUP,  !Input
@@ -278,15 +288,16 @@ C=======================================================================
       ELSEIF (DYNAMIC .EQ. SEASEND) THEN
 !-----------------------------------------------------------------------
 !     YIELD  = TUBWT*10.*PLANTS   !YIELD used by OPAHRV, OPOPS
-      YIELD  = TUBWT*10.*PLTPOP   !CHP changed 
+      YIELD  = TUBWT*10.*PLTPOP   !CHP changed
 
-      CALL PT_OPGROW(CONTROL, ISWITCH, 
+      CALL PT_OPGROW(CONTROL, ISWITCH, WEATHER,
      &    BIOMAS, DEADLF, GRAINN, ISTAGE, LFWT, MDATE,    !Input
      &    NLAYR, NSTRES, PLTPOP, RLV, ROOTN, RTDEP, RTWT, !Input
      &    SATFAC, SENESCE, STMWT, STOVN, STOVWT, SWFAC,   !Input
-     &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT)!Input
+     &    TUBN, TUBWT, TURFAC, WTNCAN, WTNUP, XLAI, YRPLT,!Input
+     &    DTT, CUMDTT, STT, CUMSTT)                       !Input: By Khan for PT_BTHTIME
 
-      CALL PT_OPHARV(CONTROL, ISWITCH, 
+      CALL PT_OPHARV(CONTROL, ISWITCH,
      &    AGEFAC, APTNUP, BIOMAS, GNUP, HARVFRAC, ISDATE, !Input
      &    ISTAGE, MAXLAI, MDATE, NSTRES, PLTPOP, SDWT,    !Input
      &    SDWTPL, SEEDNO, STGDOY, STOVWT, SWFAC, TOTNUP,  !Input
@@ -354,7 +365,7 @@ C-----------------------------------------------------------------------
       INTEGER ERR, ISECT, LNUM, PATHL
 
       REAL RWUEP1, PORMIN, RWUMX
-      
+
 !     LOGICAL EOF
 !-----------------------------------------------------------------------
 !     Read data from FILEIO for use in ROOTGR module
@@ -367,7 +378,7 @@ C-----------------------------------------------------------------------
       IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILEIO,LNUM)
 
 !C-----------------------------------------------------------------------
-!C    Read Harvest Section for maturity date 
+!C    Read Harvest Section for maturity date
 !C-----------------------------------------------------------------------
 !     CHP 6/26/09 harvest date is handled by management routine.
 !      SECTION = '*HARVE'

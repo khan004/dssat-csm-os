@@ -542,6 +542,7 @@ set(
         "Plant/SAMUCA-Sugarcane/SC_sucrose_content.f90"
         "Plant/SAMUCA-Sugarcane/SC_TOTASS_SAM.f90"
         "Plant/SAMUCA-Sugarcane/SC_water_stress_sugarcane.f90"
+        "Plant/SUBSTOR-Potato/PT_BTHTIME.for"
         "Plant/SUBSTOR-Potato/PT_GROSUB.for"
         "Plant/SUBSTOR-Potato/PT_NFACTO.for"
         "Plant/SUBSTOR-Potato/PT_NUPTAK.for"
