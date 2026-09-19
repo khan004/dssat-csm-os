@@ -1028,7 +1028,8 @@ C-GH     IF (PLTPOP .LE. 0.0 .OR. PLTPOP .GT. 999.) THEN
             IF (CROP /= 'SC') CALL ERROR (ERRKEY,14,FILEX,LINEXP)
          ENDIF
          IF ((INDEX('PT',CROP)) .GT. 0) THEN
-           IF (SPRLAP .LE. 0.0) THEN
+!           IF (SPRLAP .LE. 0.0) THEN
+            IF (SPRLAP .LT. 0.0) THEN ! Khan: 2026-09-19. Allow zero sprout length; reject negative values.
               CALL ERROR (ERRKEY,16,FILEX,LINEXP)
            ENDIF
            IF (SDWTPL .LE. 0.0) THEN
